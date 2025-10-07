@@ -1,0 +1,7 @@
+These are all the required packages for the project
+
+
+
+
+pytubefix
+pygame # For playing audio
