@@ -6,3 +6,4 @@ These are all the required packages for the project
 pytubefix
 pydub
 audioop-lts
+pyttsx3 VERSION 2.91
