@@ -78,8 +78,7 @@ def PlaySong(AudioPath, AlreadyConverted = False): # This will play the song fro
 def SearchSong(SongName : str) :  # Music searching, Returns list of Youtube videos
 
     SongFilter = {
-        "Type" : Filter.get_type("Video"),
-        "duration" : Filter.get_duration("Under 4 minutes")
+        "Type" : Filter.get_type("Video")
     }
 
 
