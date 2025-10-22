@@ -19,11 +19,6 @@ if __name__ == "__main__": # This will prevent the file from being run directly
 
 
 
-
-
-
-
-
 CachePath = R"C:\Users\rmohamma1884\OneDrive - Hamilton Wentworth District School Board\Documents\OpenSound\OpenSound\Cache\Music"
 SongName = R"\Song.m4a" # .M4a name
 ConvertedSongName = R"\Song.wav" # Name of song when converted to .WAV

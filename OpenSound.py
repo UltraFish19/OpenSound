@@ -1,11 +1,22 @@
 # Opensound Main Module
 
 import MusicService # Import the Music Service module
-import TTSService # Text to speech service
+from TTSService import Say, SayThenLog # Text to speech service
+import AppService # Host app
 import datetime # Convert seconds to formatted time
+from time import sleep
 
 MusicService.InitAudio() # Initialize the audio system
 
+
+AppService.HostApp()
+
+sleep(1) # Skip the Flask yap fest
+
+
+
+
+print("\n\n\n\n\n")
 
 print("Welcome to OpenSound!") # Welcome message
 print("Commands are: \n <URL> to play a song \n Pause to pause \n Play to resume \n Replay to play the cached song")
@@ -19,21 +30,28 @@ print("Commands are: \n <URL> to play a song \n Pause to pause \n Play to resume
 while True:
     UserInput = input("Enter a command or Song name: ") # Ask the user for a command or URL
 
-    TTSService.Say("Searching for " + UserInput)
+    
 
     if UserInput.lower() == "pause": # If the user wants to pause the audio
+        
+        
         MusicService.SetAudioPlaying(False) # Pause the audio
+        Say("Audio paused.")
         print("Audio paused.") # Inform the user that the audio is paused
-    elif UserInput.lower() == "play": # If the user wants to resume the audio
+    elif UserInput.lower() == "play": # If the user wants to resume the audio       
         MusicService.SetAudioPlaying(True) # Resume the audio
+        Say("Audio unpaused.")
         print("Audio resumed.") # Inform the user that the audio is resumed
     elif UserInput.lower() == "replay":
+        Say("Replaying song")
         MusicService.PlaySong(MusicService.CachePath + MusicService.ConvertedSongName,True)
     else: # Otherwise, assume the user entered a URL
         SearchResults = MusicService.SearchSong("Youtube Music" + UserInput)
 
+        Say("Searching for " + UserInput)
+
         if len(SearchResults) == 0:
-            print("No search results for " + UserInput)
+            SayThenLog("No search results for " + UserInput)
         else:
             print("Search results for " + UserInput)
             for Index, Result in enumerate(SearchResults):
@@ -51,12 +69,12 @@ while True:
             try:
                 SongToPlay = SearchResults[int(UserChoice) - 1]
             except ValueError:
-                print("Invalid input")
+                SayThenLog("Invalid input")
             except IndexError:
-                print("Invalid input, Number must be lower")
+                SayThenLog("Invalid input, Number must be lower")
 
             if SongToPlay is not None:
-                print(f"Playing {SongToPlay.title}")
+                SayThenLog(f"Playing {SongToPlay.title}")
                 MusicService.FetchSong(SongToPlay.watch_url)
             
 
@@ -84,3 +102,5 @@ while True:
 #     MusicService.FetchSong(SearchResult.watch_url) # Play video link
 # except Exception as e:
 #     print(f"Something went wrong, please try again. \n {e}")
+
+

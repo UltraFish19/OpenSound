@@ -1,9 +1,6 @@
-These are all the required packages for the project
+# These are all the required packages for the project
 
-
-
-
-pytubefix
+pytubefix==2.91
 pydub
 audioop-lts
-pyttsx3 VERSION 2.91
+Flask
