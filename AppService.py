@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask,render_template
 import threading
 
 
@@ -17,9 +17,13 @@ def App():
 
 
 
-    @App.route("/")
+    @App.route("/") # Home page
     def HomePage():
-        return "<p>Hello, World!</p>"
+        return render_template("HomeScreen.html")
+
+
+
+
 
     App.run()
 
@@ -31,7 +35,7 @@ def App():
 
 
 def HostApp(): # NOT PRODUCTION
-   AppThread = threading.Thread(target=App).start()
+   threading.Thread(target=App).start()
 
    
     
