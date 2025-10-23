@@ -17,12 +17,13 @@ def App():
 
 
 
-    @App.route("/") # Home page
+    @App.route("/",methods=["POST","GET"]) # Home page
     def HomePage():
         return render_template("HomeScreen.html")
 
-
-
+    @App.route("/Music")
+    def MusicPlayer():
+        return render_template("Music.html")
 
 
     App.run()

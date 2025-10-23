@@ -9,15 +9,14 @@
     <header>
         <h1 class="Title">Opensound</h1>
         <button class="Button" onclick='
+        
         var OldWindow = window.location.href
-        window.location.replace(OldWindow + "Music")    
-        '>Music</button>
+
+        var NewWindow = OldWindow.replace("Music","")
+        window.location.replace(NewWindow)      
+        '>Home</button>
         <hr>
     </header>
 
-    <p class="Main">Welcome to the Opensound control panel.</p>
-    <p class="Main">To access features click/tap on the buttons above.</p>
-    <p class="Main">For now this site will look very barebones because I'm not a web developer!</p>
-    
 </body>
 </html>
