@@ -2,10 +2,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Opensound | Home</title>
+    <title>Opensound | Music</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='Style/Style.css') }}">
 </head>
 <body>
+    <script src="{{ url_for('static',filename='Src/MusicClient.js')}}"></script>
     <header>
         <h1 class="Title">Opensound</h1>
         <button class="Button" onclick='
@@ -17,6 +18,11 @@
         '>Home</button>
         <hr>
     </header>
+    <div style="text-align: center;">
+    <input type = "text" id = "MusicSearch" placeholder="Enter the song name." class = "InputBox">
+    </div>
+    <button class="ButtonSmall" onclick="OnSubmit()">Submit</button>
+
 
 </body>
 </html>

@@ -9,17 +9,26 @@ if __name__ == "__main__": # This will prevent the file from being run directly
 
 
 
-Engine = pyttsx3.init()
+
 
 
 
 
 
 def Say(Text : str): # Text to speech
-    MusicService.pygame.mixer.music.set_volume(50.0) # Set volume lower so people can actually hear the TTS
-    pyttsx3.speak(Text)
-    MusicService.pygame.mixer.music.set_volume(100.0)
 
+
+    try:
+        Engine = pyttsx3.init()
+        MusicService.pygame.mixer.music.set_volume(50.0) # Set volume lower so people can actually hear the TTS
+        Engine.say(Text)
+        Engine.runAndWait()
+
+        del Engine
+        
+        MusicService.pygame.mixer.music.set_volume(100.0)
+    except:
+        print("TTS already active")
 
 
 def SayThenLog(Text : str): # Text to speech then also print it
