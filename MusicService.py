@@ -7,7 +7,7 @@ import os # Import the OS module to handle file paths
 import pydub # Audio libarary to handle audio files
 from pydub.playback import play # Import the playback function from pydub
 from pydub import AudioSegment
-
+from TTSService import Say
 
 
 if __name__ == "__main__": # This will prevent the file from being run directly
@@ -110,3 +110,20 @@ def FetchSong(Link : str): #This will download a the song from Youtube music, an
         PlaySong(CachePath+SongName) # Play the song from the cache folder
     except Exception as e:
         print(f"Failed to download song. \n {e}")
+
+
+
+
+def PlaySimple(Search):
+    try:
+        SearchResults = SearchSong(Search)
+
+        SearchResult = SearchResults[0] # First song on list
+
+        print(f"Playing {SearchResult.title}, by {SearchResult.author}.")
+
+        FetchSong(SearchResult.watch_url) # Play video link
+    except Exception as e:
+        Say(f"Something went wrong, please try again. \n {e}")
+
+

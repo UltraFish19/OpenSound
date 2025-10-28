@@ -1,41 +1,38 @@
 // Music player
 
 
+const Socket = io();
 
 
 
+Socket.on("connect", function(){
+console.log("Connected succesfully");
+});
+
+
+Socket.on("GenericResponse",function(Data){
+
+console.log("Server Message: " + Data["Status"])
+
+});
 
 
 
 function OnSubmit(){
 
-    var MusicInput = document.getElementById("MusicSearch") // Get all the useful elements.
+    var MusicInput = document.getElementById("MusicSearch"); // Get all the useful elements.
 
 
-    var Data = {
+    var RequestData = {
         RequestType: "SearchSongs", // Request type
         Search: MusicInput.value // Search
+    };
 
 
-    }
-
-
-    fetch("/SendForm",{
-        method: "POST", // Tell it the method
-        headers: {
-            "Content-Type" : "application/json" // Mention that it is a JSON
-        },
-        body : JSON.stringify(Data)
-    })
-    .then(response => response.json)
-    .then(ServerData => {
-        console.log("Success:", ServerData);
-    })
-    .catch(Error => {
-        console.error("Error:", Error);
-    });
+    Socket.emit("ClientSubmit",RequestData)
 
 
 }
+
 
 
