@@ -116,11 +116,13 @@ def FetchSong(Link : str): #This will download a the song from Youtube music, an
 
 def PlaySimple(Search):
     try:
+
+        Say("Searching for" + Search)
         SearchResults = SearchSong(Search)
 
         SearchResult = SearchResults[0] # First song on list
 
-        print(f"Playing {SearchResult.title}, by {SearchResult.author}.")
+        Say(f"Playing {SearchResult.title}, by {SearchResult.author}.")
 
         FetchSong(SearchResult.watch_url) # Play video link
     except Exception as e:
