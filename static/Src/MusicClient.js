@@ -10,11 +10,25 @@ console.log("Connected succesfully");
 });
 
 
-Socket.on("GenericResponse",function(Data){
+Socket.on("GenericResponse",function(Data){ // For responses from the server
 
 console.log("Server Message: " + Data["Status"])
 
 });
+
+
+Socket.on("SearchResults",function(Results){ // For getting results.
+
+    console.log(JSON.stringify(Results))
+
+});
+
+
+function AddList(Text,Url){ //To do later.
+    const ListItem = document.createElement("li")
+    const ListSpan = document.createElement("span")
+
+}
 
 
 
