@@ -74,6 +74,13 @@
   align-self: center;
 }
 
+.SearchResultsList{
+    font-family: Arial, Helvetica, sans-serif;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    text-align: center;
+}
+
 .InputBox{
   text-align: center;
   align-self: center;

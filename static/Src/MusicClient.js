@@ -2,7 +2,7 @@
 
 
 const Socket = io();
-
+let SearchingFor = "" // What client is searching for
 
 
 Socket.on("connect", function(){
@@ -17,16 +17,60 @@ console.log("Server Message: " + Data["Status"])
 });
 
 
-Socket.on("SearchResults",function(Results){ // For getting results.
+Socket.on("SearchResults",function(Data){ // For getting results.
 
-    console.log(JSON.stringify(Results))
+
+
+    Result = Data["Result"]
+    Details = Data["Details"]
+
+
+
+       if (Details["Query"] !== SearchingFor){
+        ClearResultsList()
+       }
+
+        AddResultsList(Result["Name"] + " by " + Result["Author"], Result["Url"])
+
+
 
 });
 
 
-function AddList(Text,Url){ //To do later.
+function ClearResultsList(){
+document.getElementById("SearchResultsContainer").innerHTML = ""
+}
+
+function PlaySong(Url){
+    Socket.emit(
+
+        "ClientSubmit",
+        {
+            RequestType : "PlaySong",
+            Search : Url
+        }
+
+
+    )
+}
+
+
+function AddResultsList(Text,Url){ //To do later.
+    const ListContainer = document.getElementById("SearchResultsContainer")
     const ListItem = document.createElement("li")
-    const ListSpan = document.createElement("span")
+    const ListButton = document.createElement("Button")
+
+    ListButton.textContent = Text
+    ListButton.className = "SearchResultsList"
+    ListButton.id = Url // Store The url as the ID
+    ListButton.onclick = function(){
+        PlaySong(this.id)
+    }
+
+    ListItem.appendChild(ListButton)
+
+    ListContainer.appendChild(ListItem)
+    
 
 }
 
@@ -43,7 +87,9 @@ document.addEventListener("keydown",function(Event){ // Press enter to search so
 function OnSubmit(){
 
     var MusicInput = document.getElementById("MusicSearch"); // Get all the useful elements.
+    ClearResultsList()
 
+    SearchingFor = MusicInput.value
 
     var RequestData = {
         RequestType: "SearchSongs", // Request type

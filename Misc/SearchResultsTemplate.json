@@ -1,3 +1,6 @@
-[
-        {"Name" : "Song Name", "Duration" : "1:00", "Author" : "Song Artist", "Url" : "https"}  
-]
+{
+
+
+       "Details" : {"Query" : "Search","ResultsSent" : 0}, 
+      "Result" :  {"Name" : "Song Name", "Duration" : "1:00", "Author" : "Song Artist", "Url" : "https"}  
+}

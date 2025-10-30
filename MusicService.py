@@ -19,10 +19,10 @@ if __name__ == "__main__": # This will prevent the file from being run directly
 
 
 
-CachePath = R"C:\Users\rmohamma1884\OneDrive - Hamilton Wentworth District School Board\Documents\OpenSound\OpenSound\Cache\Music"
+CachePath = R"C:\Users\rmohamma1884\OneDrive - Hamilton Wentworth District School Board\Opensound\OpenSound\Cache\Music"
 SongName = R"\Song.m4a" # .M4a name
 ConvertedSongName = R"\Song.wav" # Name of song when converted to .WAV
-MAXLENGTH = 600 # The maximum song length in seconds
+MAXLENGTH = 1200 # The maximum song length in seconds
 
 pydub.AudioSegment.converter = R"C:\Users\rmohamma1884\Downloads\ffmpeg-8.0-essentials_build\ffmpeg-8.0-essentials_build\bin\ffmpeg" # THIS WILL CHANGE ON LINUX 
 
@@ -90,7 +90,13 @@ def SearchSong(SongName : str) :  # Music searching, Returns list of Youtube vid
     
 
 
-def FetchSong(Link : str): #This will download a the song from Youtube music, and play it.
+def FetchSong(Link : str,Announce = False): #This will download a the song from Youtube music, and play it.
+
+
+    if Announce == True:
+        Say("")
+
+    
 
     try:
         if os.path.exists(CachePath+SongName): # Check if the song already exists in the cache folder
@@ -106,11 +112,16 @@ def FetchSong(Link : str): #This will download a the song from Youtube music, an
             raise SongTooLongError
 
         Stream = YoutubeSong.streams.get_audio_only() # Get the audio only stream
-        AudioDownload = Stream.download(output_path=CachePath) # Download the audio to the cache folder
-        os.rename(AudioDownload, CachePath+SongName) # Rename the file to have a .mp4 extension, the variable will also be changed
+        Stream.download(output_path=CachePath,filename=SongName) # Download the audio to the cache folder and rename it
+        
+        if Announce == True:
+            Say(f"Playing {YoutubeSong.title} by {YoutubeSong.author}" )
+
         PlaySong(CachePath+SongName) # Play the song from the cache folder
     except Exception as e:
         print(f"Failed to download song. \n {e}")
+        if Announce == True:
+            Say("Failed to download song!")
 
 
 

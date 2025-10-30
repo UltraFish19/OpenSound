@@ -45,9 +45,11 @@ def SearchSongForClient(SearchQuery : str):
 
             SearchResults = MusicService.SearchSong(SearchQuery)
 
-            ResultsList = [] # Hold on to search results
 
-            for Result in SearchResults:
+
+            for I,Result in enumerate(SearchResults,start=1):
+
+                
                 ResultDict = {} # Hold onto data for a specific search result
 
                 try: # Omit the result if it is unavilable
@@ -55,22 +57,38 @@ def SearchSongForClient(SearchQuery : str):
                 except:
                     continue
 
+                DataToSend = {}
+
                 # Look at "Misc\SearchResultsTemplate.json" to see how the data format is going to be like.
                 ResultDict["Name"] = Result.title
                 ResultDict["Duration"] = str(datetime.timedelta(seconds=Result.length))
                 ResultDict["Author"] = Result.author
                 ResultDict["Url"] = Result.watch_url
 
-                ResultsList.append(ResultDict) # Add everything to the final list to send to client.
+                DataToSend["Result"] = ResultDict
+
+                AdditionalDataDict = {}
+                AdditionalDataDict["Query"] = SearchQuery
+                AdditionalDataDict["ResultsSent"] = I
+                
+                DataToSend["Details"] = AdditionalDataDict
+
+                SendToClients(DataToSend,SEARCHRESULTS)
 
 
-            SendToClients(ResultsList,SEARCHRESULTS)
+            
             SearchDebounce = False
             
 
 
     except Exception as e: SearchDebounce = False; print(e) # Reset debounce after an error.
 
+
+
+def PlaySoundForClient(Url):
+    
+    MusicService.FetchSong(Url,Announce=True)
+    
 
 
 def App(): 
@@ -112,7 +130,7 @@ def App():
         if Type == "SearchSongs":
             SearchSongForClient(Search)
         elif Type == "PlaySong":
-            pass
+            PlaySoundForClient(Search)
 
         emit(GENERICRESPONSE,{"Status" : "Got Request"})
 
