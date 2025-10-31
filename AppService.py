@@ -113,6 +113,7 @@ def PlaySoundForClient(Url):
 
 def PauseSongForClient():
     MusicService.SetAudioPlaying(not MusicService.CurrentSongPlaying)
+    
 
 
 def App(): 
@@ -158,7 +159,7 @@ def App():
             PlaySoundForClient(Search)
         elif Type == "PauseSong":
              # Toggle music pausingness
-            WebSocket.start_background_task(PauseSongForClient())
+            PauseSongForClient()
 
         emit(GENERICRESPONSE,{"Status" : "Got Request"})
 
@@ -182,6 +183,6 @@ def App():
 
 
 def HostApp(): # NOT PRODUCTION
-   threading.Thread(target=App).start()
+   threading.Thread(target=App,name="AppThread").start()
 
     
