@@ -4,6 +4,20 @@
 const Socket = io();
 let SearchingFor = "" // What client is searching for
 
+let SongNameLabel;
+let PlayButton;
+let MusicProgressBar;
+
+
+
+document.addEventListener("DOMContentLoaded", function() { //Waint for DOM to load
+
+    SongNameLabel = document.getElementById("SongName");
+    PlayButton = document.getElementById("PlayButton");
+    MusicProgressBar = document.getElementById("MusicProgressBar");
+});
+
+const PausePlayText = {"true" : "Play","false" : "Pause"}
 
 Socket.on("connect", function(){
 console.log("Connected succesfully");
@@ -36,6 +50,16 @@ Socket.on("SearchResults",function(Data){ // For getting results.
 
 });
 
+
+Socket.on("ServerDetails",function(Data){
+MusicDetails = Data["Music"]
+
+ SongNameLabel.textContent = "Playing " + MusicDetails["Name"]
+ PlayButton.textContent = PausePlayText[MusicDetails["IsPlaying"]] // Add the proper text for if it is paused or playing
+
+
+
+});
 
 function ClearResultsList(){
 document.getElementById("SearchResultsContainer").innerHTML = ""
@@ -75,6 +99,8 @@ function AddResultsList(Text,Url){ //To do later.
 }
 
 
+function DisablePlayingFeatures(To){} // Disable or Enable play button and everything else
+
 
 document.addEventListener("keydown",function(Event){ // Press enter to search song
     if (Event.key === "Enter") {
@@ -83,6 +109,14 @@ document.addEventListener("keydown",function(Event){ // Press enter to search so
     }
 });
 
+
+function ToggleSongPlaying(){ //Pause and play music.
+Socket.emit("ClientSubmit",{
+    RequestType : "PauseSong",
+    Search: "Uhh hi?"
+
+});
+};
 
 function OnSubmit(){
 

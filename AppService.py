@@ -9,6 +9,7 @@ if __name__ == "__main__": # This will prevent the file from being run directly
     print("This is a module, and should not be run directly.") # Warn the user if they try to run this file directly
     exit() # Exit if this file is run directly
 
+WebSocket : SocketIO
 
 
 
@@ -23,14 +24,35 @@ SEARCHRESULTS = "SearchResults" # Send search results.
 
 
 
-
 def SendToClients(Data : dict, Type): # Should only be accessed from outside the App thread
     # Each Type should be in its correct format. (eg. SEARCHRESULTS should be in the proper dictionary format) 
-    emit(Type,Data,broadcast=True) # Send to everyone connected.
+    global WebSocket
+    WebSocket.emit(Type,Data) # Send to everyone connected.
+
+
+
+
+def SendServerDetailsToClient():
+    MusicDetails = {} # Store details here
+
+    MusicDetails["TimePosition"] = MusicService.pygame.mixer.music.get_pos()
+    MusicDetails["Name"] = MusicService.CurrentlyPlaying
+    MusicDetails["TimeLength"] = MusicService.CurrentSongLength
+    MusicDetails["IsPlaying"] = MusicService.CurrentSongPlaying
+
+    ServerDetails = {}
+    ServerDetails["Music"] = MusicDetails
+
+    SendToClients(ServerDetails,SERVERDETAILS)
+
+
+
+
+
+
 
 
 SearchDebounce = False # Add a debounce to prevent the function from running while it is currently searching
-
 def SearchSongForClient(SearchQuery : str):
     global SearchDebounce
 
@@ -88,12 +110,15 @@ def SearchSongForClient(SearchQuery : str):
 def PlaySoundForClient(Url):
     
     MusicService.FetchSong(Url,Announce=True)
-    
+
+def PauseSongForClient():
+    MusicService.SetAudioPlaying(not MusicService.CurrentSongPlaying)
 
 
 def App(): 
 
-    
+    global WebSocket
+
     App = Flask(__name__)
     WebSocket = SocketIO(App) # Create the websocket for fast bidirectional communication
 
@@ -131,15 +156,21 @@ def App():
             SearchSongForClient(Search)
         elif Type == "PlaySong":
             PlaySoundForClient(Search)
+        elif Type == "PauseSong":
+             # Toggle music pausingness
+            WebSocket.start_background_task(PauseSongForClient())
 
         emit(GENERICRESPONSE,{"Status" : "Got Request"})
 
         
+    def BackgroundTask():
+        while True:
+            SendServerDetailsToClient()
+            WebSocket.sleep(1)
 
 
 
-
-
+    WebSocket.start_background_task(BackgroundTask)
 
     WebSocket.run(App,host="0.0.0.0",port=5000)
 

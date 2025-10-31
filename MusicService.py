@@ -1,9 +1,13 @@
 # Opensound Music Service Module
 
+
+import os # Import the OS module to handle file paths
+
+os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
+
 import pygame
 from pytubefix import YouTube # Import YouTube and Search from the module
 from pytubefix.contrib.search import Search, Filter
-import os # Import the OS module to handle file paths
 import pydub # Audio libarary to handle audio files
 from pydub.playback import play # Import the playback function from pydub
 from pydub import AudioSegment
@@ -23,6 +27,11 @@ CachePath = R"C:\Users\rmohamma1884\OneDrive - Hamilton Wentworth District Schoo
 SongName = R"\Song.m4a" # .M4a name
 ConvertedSongName = R"\Song.wav" # Name of song when converted to .WAV
 MAXLENGTH = 1200 # The maximum song length in seconds
+
+
+
+CurrentlyPlaying = "Nothing"
+CurrentSongLength = 0 # Can't be directly called from Pygame since pygame.music is special
 
 pydub.AudioSegment.converter = R"C:\Users\rmohamma1884\Downloads\ffmpeg-8.0-essentials_build\ffmpeg-8.0-essentials_build\bin\ffmpeg" # THIS WILL CHANGE ON LINUX 
 
@@ -47,15 +56,21 @@ def ConvertCodec(YoutubeAudioPath : str): # This will convert from .M4A to .WAV 
 def InitAudio(): # This will initialize the audio system
     pygame.mixer.init() # Initialize the mixer module in Pygame
 
+
+
+CurrentSongPlaying = False
 def SetAudioPlaying(SetTo : bool):
+    global CurrentSongPlaying
     if SetTo:
         pygame.mixer.music.unpause() # Resume the audio if SetTo is True
+        CurrentSongPlaying = True
     else:
         pygame.mixer.music.pause() # Pause the audio if SetTo is False
+        CurrentSongPlaying = False
 
 
 def PlaySong(AudioPath, AlreadyConverted = False): # This will play the song from the cache folder
-
+    global CurrentSongPlaying
 
     if AlreadyConverted == False:
         ConvertedPath = ConvertCodec(AudioPath) # Convert the audio file to .WAV
@@ -67,6 +82,7 @@ def PlaySong(AudioPath, AlreadyConverted = False): # This will play the song fro
         ConvertedPath = AudioPath
 
     pygame.mixer.music.load(ConvertedPath) # Load the song from the cache folder
+    CurrentSongPlaying = True
     pygame.mixer.music.play() # Play the song
     
 
@@ -92,11 +108,7 @@ def SearchSong(SongName : str) :  # Music searching, Returns list of Youtube vid
 
 def FetchSong(Link : str,Announce = False): #This will download a the song from Youtube music, and play it.
 
-
-    if Announce == True:
-        Say("")
-
-    
+    global CurrentlyPlaying,CurrentSongLength
 
     try:
         if os.path.exists(CachePath+SongName): # Check if the song already exists in the cache folder
@@ -108,14 +120,24 @@ def FetchSong(Link : str,Announce = False): #This will download a the song from 
 
         YoutubeSong = YouTube(Link) # Get the Youtube link  
 
-        if YoutubeSong.length > MAXLENGTH: # Prevent anyone from downloading a 24 hour long video.
+        Title = YoutubeSong.title
+        Author = YoutubeSong.author
+        Length = YoutubeSong.length
+
+
+        if Length > MAXLENGTH: # Prevent anyone from downloading a 24 hour long video.
             raise SongTooLongError
 
         Stream = YoutubeSong.streams.get_audio_only() # Get the audio only stream
         Stream.download(output_path=CachePath,filename=SongName) # Download the audio to the cache folder and rename it
         
+  
+
+        CurrentlyPlaying = Title
+        CurrentSongLength = Length
+
         if Announce == True:
-            Say(f"Playing {YoutubeSong.title} by {YoutubeSong.author}" )
+            Say(f"Playing {Title} by {Author}" )
 
         PlaySong(CachePath+SongName) # Play the song from the cache folder
     except Exception as e:
