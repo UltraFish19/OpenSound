@@ -20,6 +20,12 @@ document.addEventListener("DOMContentLoaded", function() { //Wait for DOM to loa
 });
 
 const PlayButtonTexts = {"true" : "Pause","false" : "Play"}
+let UserDragging = false; // If the user is dragging or not
+
+
+
+
+//--------------------------------<Websockets>-------------------------------------------
 
 Socket.on("connect", function(){
 console.log("Connected succesfully");
@@ -62,14 +68,41 @@ MusicDetails = Data["Music"]
  let TimePosition = MusicDetails["TimePosition"]
  let Duration = MusicDetails["TimeLength"]
 
+
+ if (UserDragging == true) {
  let MusicProgressBarValue = (TimePosition / Duration) * 1000
  MusicProgressBar.value = MusicProgressBarValue
 
+ }
+
+
 });
 
+
+//--------------------------------<Event Listeners>-------------------------------------------
+
+
+MusicProgressBar.addEventListener("mousedown",() =>{
+UserDragging = true
+});
+
+MusicProgressBar.addEventListener("touchstart",() =>{
+UserDragging = true
+});
+
+MusicProgressBar.addEventListener("mouseup",() =>{
+UserDragging = false
+});
+
+MusicProgressBar.addEventListener("touchend",() =>{
+UserDragging = false
+});
+
+
+//--------------------------------<Functions>-------------------------------------------
 function ClearResultsList(){
 document.getElementById("SearchResultsContainer").innerHTML = ""
-}
+};
 
 function PlaySong(Url){
     Socket.emit(
