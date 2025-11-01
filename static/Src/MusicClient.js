@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", function() { //Waint for DOM to lo
     MusicProgressBar = document.getElementById("MusicProgressBar");
 });
 
-const PausePlayText = {"true" : "Play","false" : "Pause"}
+const PlayButtonTexts = {"true" : "Pause","false" : "Play"}
 
 Socket.on("connect", function(){
 console.log("Connected succesfully");
@@ -55,7 +55,7 @@ Socket.on("ServerDetails",function(Data){
 MusicDetails = Data["Music"]
 
  SongNameLabel.textContent = "Playing " + MusicDetails["Name"]
- PlayButton.textContent = PausePlayText[MusicDetails["IsPlaying"]] // Add the proper text for if it is paused or playing
+ PlayButton.textContent = PlayButtonTexts[MusicDetails["IsPlaying"]] // Add the proper text for if it is paused or playing
 
 
 

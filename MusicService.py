@@ -27,10 +27,11 @@ CachePath = ""
 SongName = R"\Song.m4a" # .M4a name
 ConvertedSongName = R"\Song.wav" # Name of song when converted to .WAV
 MAXLENGTH = 1200 # The maximum song length in seconds
+NOSONGPLAYING = "Nothing" # The text that shows when no long is playing
 
 
-
-CurrentlyPlaying = "Nothing"
+CurrentlyPlaying = NOSONGPLAYING
+SongStreamEnabled = False # If the music is playing on PYGAME
 CurrentSongLength = 0 # Can't be directly called from Pygame since pygame.music is special
 
 
@@ -61,19 +62,21 @@ def InitAudio(InternalData): # This will initialize the audio system
 
 
 
+
 CurrentSongPlaying = False
 def SetAudioPlaying(SetTo : bool):
     global CurrentSongPlaying
-    if SetTo:
-        pygame.mixer.music.unpause() # Resume the audio if SetTo is True
-        CurrentSongPlaying = True
-    else:
-        pygame.mixer.music.pause() # Pause the audio if SetTo is False
-        CurrentSongPlaying = False
+    if SongStreamEnabled == True: # Prevent entire speaker from crashing
+        if SetTo:
+            pygame.mixer.music.unpause() # Resume the audio if SetTo is True
+            CurrentSongPlaying = True
+        else:
+            pygame.mixer.music.pause() # Pause the audio if SetTo is False
+            CurrentSongPlaying = False
 
 
 def PlaySong(AudioPath, AlreadyConverted = False): # This will play the song from the cache folder
-    global CurrentSongPlaying
+    global SongStreamEnabled
 
     if AlreadyConverted == False:
         ConvertedPath = ConvertCodec(AudioPath) # Convert the audio file to .WAV
@@ -86,6 +89,7 @@ def PlaySong(AudioPath, AlreadyConverted = False): # This will play the song fro
 
     pygame.mixer.music.load(ConvertedPath) # Load the song from the cache folder
     CurrentSongPlaying = True
+    SongStreamEnabled = True
     pygame.mixer.music.play() # Play the song
     
 
