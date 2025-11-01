@@ -35,9 +35,9 @@ def SendToClients(Data : dict, Type): # Should only be accessed from outside the
 def SendServerDetailsToClient():
     MusicDetails = {} # Store details here
 
-    MusicDetails["TimePosition"] = MusicService.pygame.mixer.music.get_pos()
+    MusicDetails["TimePosition"] = round((MusicService.pygame.mixer.music.get_pos()/ 1000))
     MusicDetails["Name"] = MusicService.CurrentlyPlaying
-    MusicDetails["TimeLength"] = MusicService.CurrentSongLength
+    MusicDetails["TimeLength"] = MusicService.CurrentSongLength 
     MusicDetails["IsPlaying"] = MusicService.CurrentSongPlaying
 
     ServerDetails = {}
@@ -169,14 +169,15 @@ def App():
         emit(GENERICRESPONSE,{"Status" : "Got Request"})
 
         
-    def BackgroundTask():
+    def SendDataToClientLoop():
         while True:
             SendServerDetailsToClient()
-            WebSocket.sleep(1)
+            WebSocket.sleep(0.2)
+        
 
 
 
-    WebSocket.start_background_task(BackgroundTask)
+    WebSocket.start_background_task(SendDataToClientLoop)
 
     WebSocket.run(App,host="0.0.0.0",port=5000)
 

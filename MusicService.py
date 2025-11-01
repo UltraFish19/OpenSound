@@ -76,7 +76,7 @@ def SetAudioPlaying(SetTo : bool):
 
 
 def PlaySong(AudioPath, AlreadyConverted = False): # This will play the song from the cache folder
-    global SongStreamEnabled
+    global SongStreamEnabled, CurrentSongPlaying
 
     if AlreadyConverted == False:
         ConvertedPath = ConvertCodec(AudioPath) # Convert the audio file to .WAV

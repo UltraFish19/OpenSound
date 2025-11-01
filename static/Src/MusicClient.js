@@ -10,11 +10,13 @@ let MusicProgressBar;
 
 
 
-document.addEventListener("DOMContentLoaded", function() { //Waint for DOM to load
+document.addEventListener("DOMContentLoaded", function() { //Wait for DOM to load
 
     SongNameLabel = document.getElementById("SongName");
     PlayButton = document.getElementById("PlayButton");
     MusicProgressBar = document.getElementById("MusicProgressBar");
+
+    MusicProgressBar.value = 0
 });
 
 const PlayButtonTexts = {"true" : "Pause","false" : "Play"}
@@ -56,8 +58,12 @@ MusicDetails = Data["Music"]
 
  SongNameLabel.textContent = "Playing " + MusicDetails["Name"]
  PlayButton.textContent = PlayButtonTexts[MusicDetails["IsPlaying"]] // Add the proper text for if it is paused or playing
+ 
+ let TimePosition = MusicDetails["TimePosition"]
+ let Duration = MusicDetails["TimeLength"]
 
-
+ let MusicProgressBarValue = (TimePosition / Duration) * 1000
+ MusicProgressBar.value = MusicProgressBarValue
 
 });
 
