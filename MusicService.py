@@ -23,7 +23,7 @@ if __name__ == "__main__": # This will prevent the file from being run directly
 
 
 
-CachePath = R"C:\Users\rmohamma1884\OneDrive - Hamilton Wentworth District School Board\Opensound\OpenSound\Cache\Music"
+CachePath = ""
 SongName = R"\Song.m4a" # .M4a name
 ConvertedSongName = R"\Song.wav" # Name of song when converted to .WAV
 MAXLENGTH = 1200 # The maximum song length in seconds
@@ -33,7 +33,7 @@ MAXLENGTH = 1200 # The maximum song length in seconds
 CurrentlyPlaying = "Nothing"
 CurrentSongLength = 0 # Can't be directly called from Pygame since pygame.music is special
 
-pydub.AudioSegment.converter = R"C:\Users\rmohamma1884\Downloads\ffmpeg-8.0-essentials_build\ffmpeg-8.0-essentials_build\bin\ffmpeg" # THIS WILL CHANGE ON LINUX 
+
 
 
 class SongTooLongError(Exception):
@@ -53,7 +53,10 @@ def ConvertCodec(YoutubeAudioPath : str): # This will convert from .M4A to .WAV 
         return None # Return None if the conversion fails
     
 
-def InitAudio(): # This will initialize the audio system
+def InitAudio(InternalData): # This will initialize the audio system
+    global CachePath
+    CachePath = InternalData["MusicCacheLocation"]
+    pydub.AudioSegment.converter = InternalData["FFMpegConverterLocation"]
     pygame.mixer.init() # Initialize the mixer module in Pygame
 
 

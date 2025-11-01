@@ -6,8 +6,15 @@ import AppService # Host app
 import datetime # Convert seconds to formatted time
 from time import sleep
 import threading
+import json
 
-MusicService.InitAudio() # Initialize the audio system
+
+
+InternalData = json.load(open("Data\InternalSettings.json","r"))
+
+
+
+MusicService.InitAudio(InternalData) # Initialize the audio system
 
 
 
