@@ -40,7 +40,7 @@ Socket.on("SearchResults",function(Data){ // For getting results.
 
 
 
-       if (Details["Query"] !== SearchingFor){
+       if (Details["RemovePreviousResults"] === true){
         ClearResultsList()
        }
 

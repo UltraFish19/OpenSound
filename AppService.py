@@ -92,6 +92,11 @@ def SearchSongForClient(SearchQuery : str):
                 AdditionalDataDict = {}
                 AdditionalDataDict["Query"] = SearchQuery
                 AdditionalDataDict["ResultsSent"] = I
+
+                if I == 1: # Let all clients know to remove old searchs
+                    AdditionalDataDict["RemovePreviousResults"] = True
+                else:
+                    AdditionalDataDict["RemovePreviousResults"] = False
                 
                 DataToSend["Details"] = AdditionalDataDict
 
@@ -160,7 +165,7 @@ def App():
         elif Type == "PauseSong":
              # Toggle music pausingness
             PauseSongForClient()
-
+        SendServerDetailsToClient()
         emit(GENERICRESPONSE,{"Status" : "Got Request"})
 
         

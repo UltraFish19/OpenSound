@@ -10,7 +10,7 @@ import json
 
 
 
-InternalData = json.load(open("Data\InternalSettings.json","r"))
+InternalData = json.load(open(R"Data\InternalSettings.json","r"))
 
 
 
