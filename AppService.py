@@ -119,7 +119,8 @@ def PlaySoundForClient(Url):
 def PauseSongForClient():
     MusicService.SetAudioPlaying(not MusicService.CurrentSongPlaying)
     
-
+def SetSongDurationForClient(To):
+    MusicService.SetAudioDuration(SetTo = To)
 
 def App(): 
 
@@ -165,6 +166,8 @@ def App():
         elif Type == "PauseSong":
              # Toggle music pausingness
             PauseSongForClient()
+        elif Type == "SetDuration":
+            SetSongDurationForClient(Search)
         SendServerDetailsToClient()
         emit(GENERICRESPONSE,{"Status" : "Got Request"})
 

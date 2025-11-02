@@ -7,7 +7,7 @@ let SearchingFor = "" // What client is searching for
 let SongNameLabel;
 let PlayButton;
 let MusicProgressBar;
-
+let Duration;
 
 
 document.addEventListener("DOMContentLoaded", function() { //Wait for DOM to load
@@ -17,6 +17,27 @@ document.addEventListener("DOMContentLoaded", function() { //Wait for DOM to loa
     MusicProgressBar = document.getElementById("MusicProgressBar");
 
     MusicProgressBar.value = 0
+
+
+    MusicProgressBar.addEventListener("mousedown",() =>{
+    UserDragging = true
+    });
+
+    MusicProgressBar.addEventListener("touchstart",() =>{
+    UserDragging = true
+    });
+
+    MusicProgressBar.addEventListener("mouseup",() =>{
+    SetDuration(MusicProgressBar.value)
+    UserDragging = false
+    });
+
+    MusicProgressBar.addEventListener("touchend",() =>{
+    SetDuration((MusicProgressBar.value / 1000) * Duration)
+    UserDragging = false
+    });
+
+
 });
 
 const PlayButtonTexts = {"true" : "Pause","false" : "Play"}
@@ -66,10 +87,10 @@ MusicDetails = Data["Music"]
  PlayButton.textContent = PlayButtonTexts[MusicDetails["IsPlaying"]] // Add the proper text for if it is paused or playing
  
  let TimePosition = MusicDetails["TimePosition"]
- let Duration = MusicDetails["TimeLength"]
+ Duration = MusicDetails["TimeLength"]
 
 
- if (UserDragging == true) {
+ if (UserDragging == false) {
  let MusicProgressBarValue = (TimePosition / Duration) * 1000
  MusicProgressBar.value = MusicProgressBarValue
 
@@ -82,24 +103,21 @@ MusicDetails = Data["Music"]
 //--------------------------------<Event Listeners>-------------------------------------------
 
 
-MusicProgressBar.addEventListener("mousedown",() =>{
-UserDragging = true
-});
-
-MusicProgressBar.addEventListener("touchstart",() =>{
-UserDragging = true
-});
-
-MusicProgressBar.addEventListener("mouseup",() =>{
-UserDragging = false
-});
-
-MusicProgressBar.addEventListener("touchend",() =>{
-UserDragging = false
-});
 
 
 //--------------------------------<Functions>-------------------------------------------
+
+function SetDuration(SetTo){
+    Socket.emit(
+        "ClientSubmit",
+        {
+            RequestType : "SetDuration",
+            Search : SetTo
+        }
+    )
+}
+
+
 function ClearResultsList(){
 document.getElementById("SearchResultsContainer").innerHTML = ""
 };

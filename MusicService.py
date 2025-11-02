@@ -6,6 +6,7 @@ import os # Import the OS module to handle file paths
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
 
 import pygame
+from pyglet.media import Player
 from pytubefix import YouTube # Import YouTube and Search from the module
 from pytubefix.contrib.search import Search, Filter
 import pydub # Audio libarary to handle audio files
@@ -65,7 +66,7 @@ def InitAudio(InternalData): # This will initialize the audio system
 
 CurrentSongPlaying = False
 def SetAudioPlaying(SetTo : bool):
-    global CurrentSongPlaying
+    global SongStreamEnabled, CurrentSongPlaying
     if SongStreamEnabled == True: # Prevent entire speaker from crashing
         if SetTo:
             pygame.mixer.music.unpause() # Resume the audio if SetTo is True
@@ -73,6 +74,13 @@ def SetAudioPlaying(SetTo : bool):
         else:
             pygame.mixer.music.pause() # Pause the audio if SetTo is False
             CurrentSongPlaying = False
+
+
+def SetAudioDuration(SetTo : int):
+    global SongStreamEnabled
+
+    if SongStreamEnabled == True:
+        pygame.mixer.music.set_pos(float(SetTo * 1000))
 
 
 def PlaySong(AudioPath, AlreadyConverted = False): # This will play the song from the cache folder
