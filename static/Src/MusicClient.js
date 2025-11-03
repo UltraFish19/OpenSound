@@ -19,23 +19,16 @@ document.addEventListener("DOMContentLoaded", function() { //Wait for DOM to loa
     MusicProgressBar.value = 0
 
 
-    MusicProgressBar.addEventListener("mousedown",() =>{
-    UserDragging = true
-    });
+MusicProgressBar.addEventListener("change", () => {
+    const Percentage = parseInt(MusicProgressBar.value) / 1000;
+    const NewTime = Percentage * Duration;
+    
+    SetDuration(NewTime);
+    UserDragging = false;
+});
 
-    MusicProgressBar.addEventListener("touchstart",() =>{
-    UserDragging = true
-    });
-
-    MusicProgressBar.addEventListener("mouseup",() =>{
-    SetDuration(MusicProgressBar.value)
-    UserDragging = false
-    });
-
-    MusicProgressBar.addEventListener("touchend",() =>{
-    SetDuration((MusicProgressBar.value / 1000) * Duration)
-    UserDragging = false
-    });
+MusicProgressBar.addEventListener("mousedown", () => { UserDragging = true; });
+MusicProgressBar.addEventListener("touchstart", () => { UserDragging = true; });
 
 
 });

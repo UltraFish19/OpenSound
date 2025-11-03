@@ -1,12 +1,14 @@
 # Opensound Music Service Module
 
 
-import os # Import the OS module to handle file paths
-
+from io import FileIO
+import os
+from time import sleep # Import the OS module to handle file paths
+import gc
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
 
 import pygame
-from pyglet.media import Player
+import pyglet
 from pytubefix import YouTube # Import YouTube and Search from the module
 from pytubefix.contrib.search import Search, Filter
 import pydub # Audio libarary to handle audio files
@@ -35,8 +37,10 @@ CurrentlyPlaying = NOSONGPLAYING
 SongStreamEnabled = False # If the music is playing on PYGAME
 CurrentSongLength = 0 # Can't be directly called from Pygame since pygame.music is special
 
-
-
+AudioPlayer = pyglet.media.Player()
+Clock = pyglet.clock
+AudioSource : pyglet.media.StreamingSource = None
+AudioFileHandle : FileIO = None
 
 class SongTooLongError(Exception):
     def __init__(Self,Message=f"Your song is too long, the maximum length is {MAXLENGTH} secs"):
@@ -59,7 +63,7 @@ def InitAudio(InternalData): # This will initialize the audio system
     global CachePath
     CachePath = InternalData["MusicCacheLocation"]
     pydub.AudioSegment.converter = InternalData["FFMpegConverterLocation"]
-    pygame.mixer.init() # Initialize the mixer module in Pygame
+    
 
 
 
@@ -69,22 +73,22 @@ def SetAudioPlaying(SetTo : bool):
     global SongStreamEnabled, CurrentSongPlaying
     if SongStreamEnabled == True: # Prevent entire speaker from crashing
         if SetTo:
-            pygame.mixer.music.unpause() # Resume the audio if SetTo is True
+            AudioPlayer.play()
             CurrentSongPlaying = True
         else:
-            pygame.mixer.music.pause() # Pause the audio if SetTo is False
+            AudioPlayer.pause() # Pause the audio if SetTo is False
             CurrentSongPlaying = False
 
 
-def SetAudioDuration(SetTo : int):
+def SetAudioDuration(SetTo : float):
     global SongStreamEnabled
 
     if SongStreamEnabled == True:
-        pygame.mixer.music.set_pos(float(SetTo * 1000))
+        AudioPlayer.seek(SetTo)
 
 
 def PlaySong(AudioPath, AlreadyConverted = False): # This will play the song from the cache folder
-    global SongStreamEnabled, CurrentSongPlaying
+    global SongStreamEnabled, CurrentSongPlaying, AudioSource,AudioPlayer, AudioFileHandle
 
     if AlreadyConverted == False:
         ConvertedPath = ConvertCodec(AudioPath) # Convert the audio file to .WAV
@@ -95,10 +99,22 @@ def PlaySong(AudioPath, AlreadyConverted = False): # This will play the song fro
     else:
         ConvertedPath = AudioPath
 
-    pygame.mixer.music.load(ConvertedPath) # Load the song from the cache folder
+  
+    AudioPlayer = pyglet.media.Player()
+
+
+    AudioFileHandle = open(ConvertedPath,"rb")
+
+
+    AudioSource = pyglet.media.load(ConvertedPath,file=AudioFileHandle,streaming=True) # Load the song from the cache folder
+
+    AudioPlayer.queue(AudioSource)
+
+    AudioPlayer.play() # Play the song
+
     CurrentSongPlaying = True
     SongStreamEnabled = True
-    pygame.mixer.music.play() # Play the song
+    
     
 
 def SearchSong(SongName : str) :  # Music searching, Returns list of Youtube videos
@@ -118,19 +134,34 @@ def SearchSong(SongName : str) :  # Music searching, Returns list of Youtube vid
 
 
     
+def UnloadAudio():
+    global AudioPlayer, AudioSource,AudioFileHandle
+
+    if AudioFileHandle:
+        AudioPlayer.delete()
+        AudioSource.delete()
+        AudioFileHandle.close()
+
     
 
 
 def FetchSong(Link : str,Announce = False): #This will download a the song from Youtube music, and play it.
 
-    global CurrentlyPlaying,CurrentSongLength
+    global CurrentlyPlaying,CurrentSongLength, SongStreamEnabled,AudioSource
+    
 
     try:
         if os.path.exists(CachePath+SongName): # Check if the song already exists in the cache folder
             os.remove(CachePath+SongName) # Remove the old song from the cache folder if it exists
 
         if os.path.exists(CachePath+ConvertedSongName): # Check if the converted song already exists in the cache folder
-            pygame.mixer.music.unload() # Unload the previous song if there was one
+            SongStreamEnabled = False
+
+
+            
+            
+
+            UnloadAudio()    
             os.remove(CachePath+ConvertedSongName) # Remove the converted song if it exists
 
         YoutubeSong = YouTube(Link) # Get the Youtube link  
@@ -176,5 +207,4 @@ def PlaySimple(Search):
         FetchSong(SearchResult.watch_url) # Play video link
     except Exception as e:
         Say(f"Something went wrong, please try again. \n {e}")
-
 

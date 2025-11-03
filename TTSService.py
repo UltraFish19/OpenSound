@@ -20,13 +20,13 @@ def Say(Text : str): # Text to speech
 
     try:
         Engine = pyttsx3.init()
-        MusicService.pygame.mixer.music.set_volume(50.0) # Set volume lower so people can actually hear the TTS
+        MusicService.AudioPlayer.volume = 0.5 # Set volume lower so people can actually hear the TTS
         Engine.say(Text)
         Engine.runAndWait()
 
         del Engine
         
-        MusicService.pygame.mixer.music.set_volume(100.0)
+        MusicService.AudioPlayer.volume = 1.0
     except:
         print("TTS already active")
 

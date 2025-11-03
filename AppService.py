@@ -35,7 +35,7 @@ def SendToClients(Data : dict, Type): # Should only be accessed from outside the
 def SendServerDetailsToClient():
     MusicDetails = {} # Store details here
 
-    MusicDetails["TimePosition"] = round((MusicService.pygame.mixer.music.get_pos()/ 1000))
+    MusicDetails["TimePosition"] = MusicService.AudioPlayer.time
     MusicDetails["Name"] = MusicService.CurrentlyPlaying
     MusicDetails["TimeLength"] = MusicService.CurrentSongLength 
     MusicDetails["IsPlaying"] = MusicService.CurrentSongPlaying
@@ -120,7 +120,7 @@ def PauseSongForClient():
     MusicService.SetAudioPlaying(not MusicService.CurrentSongPlaying)
     
 def SetSongDurationForClient(To):
-    MusicService.SetAudioDuration(SetTo = To)
+    MusicService.SetAudioDuration(float(To))
 
 def App(): 
 
@@ -175,6 +175,7 @@ def App():
     def SendDataToClientLoop():
         while True:
             SendServerDetailsToClient()
+            MusicService.Clock.tick()
             WebSocket.sleep(0.2)
         
 
