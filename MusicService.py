@@ -4,16 +4,12 @@
 from io import FileIO
 import os
 from time import sleep # Import the OS module to handle file paths
-import gc
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
 
-import pygame
 import pyglet
 from pytubefix import YouTube # Import YouTube and Search from the module
 from pytubefix.contrib.search import Search, Filter
 import pydub # Audio libarary to handle audio files
-from pydub.playback import play # Import the playback function from pydub
-from pydub import AudioSegment
 from TTSService import Say
 
 
@@ -100,10 +96,10 @@ def PlaySong(AudioPath, AlreadyConverted = False): # This will play the song fro
         ConvertedPath = AudioPath
 
   
-    AudioPlayer = pyglet.media.Player()
+    AudioPlayer = pyglet.media.Player() # Create player object.
 
 
-    AudioFileHandle = open(ConvertedPath,"rb")
+    AudioFileHandle = open(ConvertedPath,"rb") 
 
 
     AudioSource = pyglet.media.load(ConvertedPath,file=AudioFileHandle,streaming=True) # Load the song from the cache folder
