@@ -36,9 +36,9 @@ def SendServerDetailsToClient():
     MusicDetails = {} # Store details here
 
     MusicDetails["TimePosition"] = MusicService.AudioPlayer.time
-    MusicDetails["Name"] = MusicService.CurrentlyPlaying
-    MusicDetails["TimeLength"] = MusicService.CurrentSongLength 
-    MusicDetails["IsPlaying"] = MusicService.CurrentSongPlaying
+    MusicDetails["Name"] = MusicService.SongInfo.Name
+    MusicDetails["TimeLength"] = MusicService.SongInfo.Duration
+    MusicDetails["IsPlaying"] = MusicService.SongInfo.CurrentSongPlaying
 
     ServerDetails = {}
     ServerDetails["Music"] = MusicDetails
@@ -117,7 +117,7 @@ def PlaySoundForClient(Url):
     MusicService.FetchSong(Url,Announce=True)
 
 def PauseSongForClient():
-    MusicService.SetAudioPlaying(not MusicService.CurrentSongPlaying)
+    MusicService.SetAudioPlaying(not MusicService.SongInfo.CurrentSongPlaying)
     
 def SetSongDurationForClient(To):
     MusicService.SetAudioDuration(float(To))

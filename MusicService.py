@@ -25,26 +25,33 @@ if __name__ == "__main__": # This will prevent the file from being run directly
 CachePath = ""
 SongName = R"\Song.m4a" # .M4a name
 ConvertedSongName = R"\Song.wav" # Name of song when converted to .WAV
-MAXLENGTH = 1200 # The maximum song length in seconds
+MAXDURATION = 1200 # The maximum song length in seconds
 NOSONGPLAYING = "Nothing" # The text that shows when no long is playing
 
 
-CurrentlyPlaying = NOSONGPLAYING
-SongStreamEnabled = False # If the music is playing on PYGAME
-CurrentSongLength = 0 # Can't be directly called from Pygame since pygame.music is special
+
+
 
 AudioPlayer = pyglet.media.Player()
 Clock = pyglet.clock
 AudioSource : pyglet.media.StreamingSource = None
 AudioFileHandle : FileIO = None
 
+
+
+class SongInfo():
+    Name = NOSONGPLAYING
+    SongStreamEnabled = False # If the music is playing on Pyglet
+    Duration = -10000 
+    CurrentSongPlaying = False
+
 class SongTooLongError(Exception):
-    def __init__(Self,Message=f"Your song is too long, the maximum length is {MAXLENGTH} secs"):
+    def __init__(Self,Message=f"Your song is too long, the maximum length is {MAXDURATION} secs"):
         super().__init__(Message)
 
 
 
-def ConvertCodec(YoutubeAudioPath : str): # This will convert from .M4A to .WAV which works on Pygame
+def ConvertCodec(YoutubeAudioPath : str): # This will convert from .M4A to .WAV which works on Windows
     try:
         M4AAudio = pydub.AudioSegment.from_file(YoutubeAudioPath, codec="aac")
         M4AAudio.export(YoutubeAudioPath.replace(".m4a", ".wav"), format="wav") # Export the audio file as a .WAV file
@@ -64,27 +71,27 @@ def InitAudio(InternalData): # This will initialize the audio system
 
 
 
-CurrentSongPlaying = False
+SongInfo.CurrentSongPlaying = False
 def SetAudioPlaying(SetTo : bool):
-    global SongStreamEnabled, CurrentSongPlaying
-    if SongStreamEnabled == True: # Prevent entire speaker from crashing
+    
+    if SongInfo.SongStreamEnabled == True: # Prevent entire speaker from crashing
         if SetTo:
             AudioPlayer.play()
-            CurrentSongPlaying = True
+            SongInfo.CurrentSongPlaying = True
         else:
             AudioPlayer.pause() # Pause the audio if SetTo is False
-            CurrentSongPlaying = False
+            SongInfo.CurrentSongPlaying = False
 
 
 def SetAudioDuration(SetTo : float):
-    global SongStreamEnabled
+    
 
-    if SongStreamEnabled == True:
+    if SongInfo.SongStreamEnabled == True:
         AudioPlayer.seek(SetTo)
 
 
 def PlaySong(AudioPath, AlreadyConverted = False): # This will play the song from the cache folder
-    global SongStreamEnabled, CurrentSongPlaying, AudioSource,AudioPlayer, AudioFileHandle
+    global AudioSource,AudioPlayer, AudioFileHandle
 
     if AlreadyConverted == False:
         ConvertedPath = ConvertCodec(AudioPath) # Convert the audio file to .WAV
@@ -104,12 +111,14 @@ def PlaySong(AudioPath, AlreadyConverted = False): # This will play the song fro
 
     AudioSource = pyglet.media.load(ConvertedPath,file=AudioFileHandle,streaming=True) # Load the song from the cache folder
 
+    SongInfo.Duration = AudioSource.duration
+
     AudioPlayer.queue(AudioSource)
 
     AudioPlayer.play() # Play the song
 
-    CurrentSongPlaying = True
-    SongStreamEnabled = True
+    SongInfo.CurrentSongPlaying = True
+    SongInfo.SongStreamEnabled = True
     
     
 
@@ -143,7 +152,7 @@ def UnloadAudio():
 
 def FetchSong(Link : str,Announce = False): #This will download a the song from Youtube music, and play it.
 
-    global CurrentlyPlaying,CurrentSongLength, SongStreamEnabled,AudioSource
+    global  AudioSource
     
 
     try:
@@ -151,7 +160,7 @@ def FetchSong(Link : str,Announce = False): #This will download a the song from 
             os.remove(CachePath+SongName) # Remove the old song from the cache folder if it exists
 
         if os.path.exists(CachePath+ConvertedSongName): # Check if the converted song already exists in the cache folder
-            SongStreamEnabled = False
+            SongInfo.SongStreamEnabled = False
 
 
             
@@ -167,7 +176,7 @@ def FetchSong(Link : str,Announce = False): #This will download a the song from 
         Length = YoutubeSong.length
 
 
-        if Length > MAXLENGTH: # Prevent anyone from downloading a 24 hour long video.
+        if Length > MAXDURATION: # Prevent anyone from downloading a 24 hour long video.
             raise SongTooLongError
 
         Stream = YoutubeSong.streams.get_audio_only() # Get the audio only stream
@@ -175,8 +184,8 @@ def FetchSong(Link : str,Announce = False): #This will download a the song from 
         
   
 
-        CurrentlyPlaying = Title
-        CurrentSongLength = Length
+        SongInfo.Name = Title
+        SongInfo.Duration = -10000 # Force bar to the left.
 
         if Announce == True:
             Say(f"Playing {Title} by {Author}" )
