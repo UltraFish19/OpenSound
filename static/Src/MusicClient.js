@@ -3,12 +3,15 @@
 
 const Socket = io();
 let SearchingFor = "" // What client is searching for
+let CurrentUrl = ""
 
 let SongNameLabel;
 let PlayButton;
 let MusicProgressBar;
 let Duration;
 
+
+//--------------------------------<Event Listeners>-------------------------------------------
 
 document.addEventListener("DOMContentLoaded", function() { //Wait for DOM to load
 
@@ -93,10 +96,6 @@ MusicDetails = Data["Music"]
 });
 
 
-//--------------------------------<Event Listeners>-------------------------------------------
-
-
-
 
 //--------------------------------<Functions>-------------------------------------------
 
@@ -105,7 +104,7 @@ function SetDuration(SetTo){
         "ClientSubmit",
         {
             RequestType : "SetDuration",
-            Search : SetTo
+            Data : SetTo
         }
     )
 }
@@ -116,18 +115,32 @@ document.getElementById("SearchResultsContainer").innerHTML = ""
 };
 
 function PlaySong(Url){
+
+    CurrentUrl = Url
     Socket.emit(
 
         "ClientSubmit",
         {
             RequestType : "PlaySong",
-            Search : Url
+            Data : Url
         }
 
 
     )
 }
 
+
+function FavouriteSong(){
+    Socket.emit(
+        "ClientSubmit",
+        {
+            RequestType : "SetFavourite",
+            Data : CurrentUrl
+        }
+
+
+    )
+}
 
 function AddResultsList(Text,Url){ //To do later.
     const ListContainer = document.getElementById("SearchResultsContainer")
@@ -163,7 +176,7 @@ document.addEventListener("keydown",function(Event){ // Press enter to search so
 function ToggleSongPlaying(){ //Pause and play music.
 Socket.emit("ClientSubmit",{
     RequestType : "PauseSong",
-    Search: "Uhh hi?"
+    Data: "Uhh hi?"
 
 });
 };
@@ -177,7 +190,7 @@ function OnSubmit(){
 
     var RequestData = {
         RequestType: "SearchSongs", // Request type
-        Search: MusicInput.value // Search
+        Data: MusicInput.value // Search
     };
 
 

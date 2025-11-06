@@ -2,5 +2,5 @@
 
 
        "Details" : {"Query" : "Search","ResultsSent" : 0,"RemovePreviousResults" : false}, 
-      "Result" :  {"Name" : "Song Name", "Duration" : "1:00", "Author" : "Song Artist", "Url" : "https"}  
+      "Result" :  {"Name" : "Song Name", "Duration" : 60, "Author" : "Song Artist", "Url" : "https"}  
 }

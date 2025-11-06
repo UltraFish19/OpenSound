@@ -3,7 +3,9 @@
 
 from io import FileIO
 import os
-from time import sleep # Import the OS module to handle file paths
+from time import sleep
+
+import DataService # Import the OS module to handle file paths
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
 
 import pyglet
@@ -44,10 +46,38 @@ class SongInfo():
     SongStreamEnabled = False # If the music is playing on Pyglet
     Duration = -10000 
     CurrentSongPlaying = False
+    Author = "Unknown"
+    IsFavourited = False
 
 class SongTooLongError(Exception):
     def __init__(Self,Message=f"Your song is too long, the maximum length is {MAXDURATION} secs"):
         super().__init__(Message)
+
+FAVSONGPATH = "Data\Favorites.json" # Where the file to store favourited songs is stored.
+
+def CheckIfFavourited(Url):
+    Data = DataService.ReadJson(FAVSONGPATH) # If url exists then it is favourited.
+    if Data.get(Url):
+        return True
+    else:
+        return False
+    
+
+
+
+def ToggleFavourite(Url,Name ="Unknown",Author = "Unknown"): # If faved it will remove otherwise it will add.
+    Data = DataService.ReadJson(FAVSONGPATH)
+    if CheckIfFavourited(Url) == False:
+        Data[Url] = {
+            "Name" : Name,
+            "Author" : Author
+        }
+    else:
+        Data.pop(Url)
+        
+    DataService.SaveJson(FAVSONGPATH,Data) # Finish by saving changes
+
+
 
 
 
@@ -139,7 +169,7 @@ def SearchSong(SongName : str) :  # Music searching, Returns list of Youtube vid
 
 
     
-def UnloadAudio():
+def UnloadAudio(): # Frees up old audio files and fully unloads.
     global AudioPlayer, AudioSource,AudioFileHandle
 
     if AudioFileHandle:
@@ -182,6 +212,7 @@ def FetchSong(Link : str,Announce = False): #This will download a the song from 
         Stream = YoutubeSong.streams.get_audio_only() # Get the audio only stream
         Stream.download(output_path=CachePath,filename=SongName) # Download the audio to the cache folder and rename it
         
+        SongInfo.Author = Author
   
 
         SongInfo.Name = Title

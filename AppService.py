@@ -39,6 +39,7 @@ def SendServerDetailsToClient():
     MusicDetails["Name"] = MusicService.SongInfo.Name
     MusicDetails["TimeLength"] = MusicService.SongInfo.Duration
     MusicDetails["IsPlaying"] = MusicService.SongInfo.CurrentSongPlaying
+    MusicDetails["Faved"] = MusicService.SongInfo.IsFavourited # If song is favourited or not. This is purely for the button.
 
     ServerDetails = {}
     ServerDetails["Music"] = MusicDetails
@@ -154,20 +155,23 @@ def App():
         print(RequestData)
 
         Type = RequestData.get("RequestType")
-        Search = RequestData.get("Search")
+        Data = RequestData.get("Data")
 
         
 
 
         if Type == "SearchSongs":
-            SearchSongForClient(Search)
+            SearchSongForClient(Data)
         elif Type == "PlaySong":
-            PlaySoundForClient(Search)
+            PlaySoundForClient(Data)
         elif Type == "PauseSong":
              # Toggle music pausingness
             PauseSongForClient()
         elif Type == "SetDuration":
-            SetSongDurationForClient(Search)
+            SetSongDurationForClient(Data)
+        elif Type == "SetFavourite":
+            if MusicService.SongInfo.SongStreamEnabled == True:
+                MusicService.ToggleFavourite(Data,MusicService.SongInfo.Name,MusicService.SongInfo.Author)
         SendServerDetailsToClient()
         emit(GENERICRESPONSE,{"Status" : "Got Request"})
 
