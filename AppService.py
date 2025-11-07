@@ -2,6 +2,7 @@ import datetime
 from flask import Flask,render_template, request, jsonify
 from flask_socketio import SocketIO, emit
 import threading
+import DataService
 import MusicService
 from TTSService import Say, SayThenLog
 
@@ -54,7 +55,7 @@ def SendServerDetailsToClient():
 
 
 SearchDebounce = False # Add a debounce to prevent the function from running while it is currently searching
-def SearchSongForClient(SearchQuery : str):
+def SearchSongForClient(SearchQuery : str,ShowFavourites = False):
     global SearchDebounce
 
     try: 
@@ -62,47 +63,69 @@ def SearchSongForClient(SearchQuery : str):
         if SearchDebounce == False:
 
             SearchDebounce = True
-
-            Say(f"Searching for {SearchQuery}")
-
-
-            SearchResults = MusicService.SearchSong(SearchQuery)
+            if ShowFavourites == False:
+                Say(f"Searching for {SearchQuery}")
 
 
+                SearchResults = MusicService.SearchSong(SearchQuery)
 
-            for I,Result in enumerate(SearchResults,start=1):
 
+
+                for I,Result in enumerate(SearchResults,start=1):
+
+                    
+                    ResultDict = {} # Hold onto data for a specific search result
+
+                    try: # Omit the result if it is unavilable
+                        Result.check_availability()
+                    except:
+                        continue
+
+                    DataToSend = {}
+
+                    # Look at "Misc\SearchResultsTemplate.json" to see how the data format is going to be like.
+                    ResultDict["Name"] = Result.title
+                    ResultDict["Duration"] = str(datetime.timedelta(seconds=Result.length))
+                    ResultDict["Author"] = Result.author
+                    ResultDict["Url"] = Result.watch_url
+
+                    DataToSend["Result"] = ResultDict
+
+                    AdditionalDataDict = {}
+                    AdditionalDataDict["Query"] = SearchQuery
+                    AdditionalDataDict["ResultsSent"] = I
+
+                    if I == 1: # Let all clients know to remove old searchs
+                        AdditionalDataDict["RemovePreviousResults"] = True
+                    else:
+                        AdditionalDataDict["RemovePreviousResults"] = False
+                    
+                    DataToSend["Details"] = AdditionalDataDict
+
+                    SendToClients(DataToSend,SEARCHRESULTS)
+            else:
+                Data = DataService.ReadJson(MusicService.FAVSONGPATH)
                 
-                ResultDict = {} # Hold onto data for a specific search result
-
-                try: # Omit the result if it is unavilable
-                    Result.check_availability()
-                except:
-                    continue
-
-                DataToSend = {}
-
-                # Look at "Misc\SearchResultsTemplate.json" to see how the data format is going to be like.
-                ResultDict["Name"] = Result.title
-                ResultDict["Duration"] = str(datetime.timedelta(seconds=Result.length))
-                ResultDict["Author"] = Result.author
-                ResultDict["Url"] = Result.watch_url
-
-                DataToSend["Result"] = ResultDict
-
-                AdditionalDataDict = {}
-                AdditionalDataDict["Query"] = SearchQuery
-                AdditionalDataDict["ResultsSent"] = I
-
-                if I == 1: # Let all clients know to remove old searchs
-                    AdditionalDataDict["RemovePreviousResults"] = True
-                else:
-                    AdditionalDataDict["RemovePreviousResults"] = False
                 
-                DataToSend["Details"] = AdditionalDataDict
+                for I,SongUrl in enumerate(Data.keys(), start=1):
+                    DataToSend = {}
+                    ResultDict = {}
+                    ResultDict["Name"] = Data["Name"]
+                    ResultDict["Duration"] = "WIP"
+                    ResultDict["Author"] = Data["Author"]
+                    ResultDict["Url"] = SongUrl
 
-                SendToClients(DataToSend,SEARCHRESULTS)
+                    AdditionalDataDict = {}
+                    AdditionalDataDict["Query"] = "Favourited Song"
+                    AdditionalDataDict["ResultsSent"] = I
 
+                    if I == 1: # Let all clients know to remove old searchs
+                        AdditionalDataDict["RemovePreviousResults"] = True
+                    else:
+                        AdditionalDataDict["RemovePreviousResults"] = False
+
+                    DataToSend["Details"] = AdditionalDataDict
+                    SendToClients(DataToSend,SEARCHRESULTS)
 
             
             SearchDebounce = False
@@ -160,22 +183,25 @@ def App():
         
 
 
-        if Type == "SearchSongs":
+        if Type == "SearchSongs": # Search for songs
             SearchSongForClient(Data)
-        elif Type == "PlaySong":
+        elif Type == "PlaySong": # Play a song via url
             PlaySoundForClient(Data)
-        elif Type == "PauseSong":
-             # Toggle music pausingness
+        elif Type == "PauseSong": # Toggle music pausingness
+             
             PauseSongForClient()
-        elif Type == "SetDuration":
+        elif Type == "SetDuration": # Set currently playing duration
             SetSongDurationForClient(Data)
-        elif Type == "SetFavourite":
+        elif Type == "SetFavourite": # Set song to be favourited
             if MusicService.SongInfo.SongStreamEnabled == True:
                 MusicService.ToggleFavourite(Data,MusicService.SongInfo.Name,MusicService.SongInfo.Author)
 
                 if Data == MusicService.SongInfo.CurrentUrl:
 
                     MusicService.SongInfo.IsFavourited = not MusicService.SongInfo.IsFavourited
+        elif Type == "ShowFavourites": # Show songs that are favourited
+            SearchSongForClient("",True)
+
         SendServerDetailsToClient()
         emit(GENERICRESPONSE,{"Status" : "Got Request"})
 

@@ -1,8 +1,7 @@
 // Music player
 
 
-const Socket = io();
-let SearchingFor = "" // What client is searching for
+const Socket = io(); //The websocket
 let CurrentUrl = ""
 
 let SongNameLabel;
@@ -183,7 +182,7 @@ document.addEventListener("keydown",function(Event){ // Press enter to search so
 function ToggleSongPlaying(){ //Pause and play music.
 Socket.emit("ClientSubmit",{
     RequestType : "PauseSong",
-    Data: "Uhh hi?"
+    Data: "PAUSE THAT SH*T"
 
 });
 };
@@ -193,7 +192,6 @@ function OnSubmit(){
     var MusicInput = document.getElementById("MusicSearch"); // Get all the useful elements.
     ClearResultsList()
 
-    SearchingFor = MusicInput.value
 
     var RequestData = {
         RequestType: "SearchSongs", // Request type
@@ -204,6 +202,18 @@ function OnSubmit(){
     Socket.emit("ClientSubmit",RequestData)
 
 
+}
+
+
+function ShowFavourites(){ // Send server request to show favourites
+    Socket.emit(
+        "ClientSubmit",
+        {RequestType : "ShowFavourites",
+         Data: "PLZ PLZ PLZ" // Easter egg
+
+        }
+
+    );
 }
 
 
