@@ -48,6 +48,7 @@ class SongInfo():
     CurrentSongPlaying = False
     Author = "Unknown"
     IsFavourited = False
+    CurrentUrl = ""
 
 class SongTooLongError(Exception):
     def __init__(Self,Message=f"Your song is too long, the maximum length is {MAXDURATION} secs"):
@@ -149,7 +150,7 @@ def PlaySong(AudioPath, AlreadyConverted = False): # This will play the song fro
 
     SongInfo.CurrentSongPlaying = True
     SongInfo.SongStreamEnabled = True
-    
+    SongInfo.IsFavourited = CheckIfFavourited(SongInfo.CurrentUrl)
     
 
 def SearchSong(SongName : str) :  # Music searching, Returns list of Youtube videos
@@ -201,19 +202,28 @@ def FetchSong(Link : str,Announce = False): #This will download a the song from 
 
         YoutubeSong = YouTube(Link) # Get the Youtube link  
 
-        Title = YoutubeSong.title
-        Author = YoutubeSong.author
+
         Length = YoutubeSong.length
+
+
 
 
         if Length > MAXDURATION: # Prevent anyone from downloading a 24 hour long video.
             raise SongTooLongError
+        
+
+        # Anything dealing with playback and song information should be below this.
+
+        Title = YoutubeSong.title
+        Author = YoutubeSong.author
+
+        SongInfo.IsFavourited = CheckIfFavourited(SongInfo.CurrentUrl)
 
         Stream = YoutubeSong.streams.get_audio_only() # Get the audio only stream
         Stream.download(output_path=CachePath,filename=SongName) # Download the audio to the cache folder and rename it
         
         SongInfo.Author = Author
-  
+        SongInfo.CurrentUrl = Link
 
         SongInfo.Name = Title
         SongInfo.Duration = -10000 # Force bar to the left.

@@ -10,6 +10,7 @@ let PlayButton;
 let MusicProgressBar;
 let Duration;
 
+let FavouriteImg;
 
 //--------------------------------<Event Listeners>-------------------------------------------
 
@@ -18,7 +19,7 @@ document.addEventListener("DOMContentLoaded", function() { //Wait for DOM to loa
     SongNameLabel = document.getElementById("SongName");
     PlayButton = document.getElementById("PlayButton");
     MusicProgressBar = document.getElementById("MusicProgressBar");
-
+    FavouriteImg = document.getElementById("FavImg")
     MusicProgressBar.value = 0
 
 
@@ -91,6 +92,12 @@ MusicDetails = Data["Music"]
  MusicProgressBar.value = MusicProgressBarValue
 
  }
+
+if (MusicDetails["IsFavourited"] == true) {
+    FavouriteImg.src = "static/Icons/Favourite/True.png"
+} else {
+    FavouriteImg.src = "static/Icons/Favourite/False.png"   
+}
 
 
 });

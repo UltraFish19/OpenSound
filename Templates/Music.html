@@ -29,7 +29,7 @@
     </div>
     <div class= "MusicControlContainer">
         <button class="MusicControlButton" onclick="FavouriteSong()">
-        <img src="{{url_for('static', filename='Icons/Favourite/False.png') }}" alt="Favourite" class="MusicControlImage">
+        <img src="{{url_for('static', filename='Icons/Favourite/False.png') }}" data-favimage="{{url_for('static', filename='Icons/Favourite/False.png')}}" alt="Favourite" class="MusicControlImage" id="FavImg">
         </button>
         <button>Loop</button>
         <button>Restart</button>

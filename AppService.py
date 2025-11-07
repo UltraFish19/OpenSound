@@ -39,7 +39,7 @@ def SendServerDetailsToClient():
     MusicDetails["Name"] = MusicService.SongInfo.Name
     MusicDetails["TimeLength"] = MusicService.SongInfo.Duration
     MusicDetails["IsPlaying"] = MusicService.SongInfo.CurrentSongPlaying
-    MusicDetails["Faved"] = MusicService.SongInfo.IsFavourited # If song is favourited or not. This is purely for the button.
+    MusicDetails["IsFavourited"] = MusicService.SongInfo.IsFavourited # If song is favourited or not. This is purely for the button.
 
     ServerDetails = {}
     ServerDetails["Music"] = MusicDetails
@@ -172,6 +172,10 @@ def App():
         elif Type == "SetFavourite":
             if MusicService.SongInfo.SongStreamEnabled == True:
                 MusicService.ToggleFavourite(Data,MusicService.SongInfo.Name,MusicService.SongInfo.Author)
+
+                if Data == MusicService.SongInfo.CurrentUrl:
+
+                    MusicService.SongInfo.IsFavourited = not MusicService.SongInfo.IsFavourited
         SendServerDetailsToClient()
         emit(GENERICRESPONSE,{"Status" : "Got Request"})
 

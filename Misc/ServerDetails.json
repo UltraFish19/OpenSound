@@ -4,7 +4,7 @@
     "SongName" : "Song",
     "TimePosition" : 60,
     "TimeLength" : 120,
-    "SongFaved" : false 
+    "IsFavourited" : false 
 }
 
 
