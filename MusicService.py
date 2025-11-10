@@ -111,16 +111,20 @@ def SetAudioPlaying(SetTo : bool):
         if SetTo:
             AudioPlayer.play()
             SongInfo.CurrentSongPlaying = True
+            Say("Resuming Audio")
         else:
             AudioPlayer.pause() # Pause the audio if SetTo is False
             SongInfo.CurrentSongPlaying = False
+            Say("Pausing Audio")
 
 
 def SetAudioDuration(SetTo : float):
     
 
     if SongInfo.SongStreamEnabled == True:
+        Say(f"Setting duration")
         AudioPlayer.seek(SetTo)
+        
 
 
 def PlaySong(AudioPath, AlreadyConverted = False): # This will play the song from the cache folder

@@ -3,6 +3,9 @@ import MusicService
 import threading
 import queue
 
+
+TTSEnabled = False
+
 # Use a queue to send speech tasks to a dedicated thread
 TtsQueue = queue.Queue()
 TtsThread: threading.Thread = None
@@ -49,7 +52,8 @@ if __name__ == "__main__":
     print("This is a module, and should not be run directly.")
     exit()
 
-def Say(Text: str):    
+def Say(Text: str): 
+    if not TTSEnabled: return   
     TtsQueue.put(Text)
 
 def SayThenLog(Text: str):

@@ -32,7 +32,7 @@
         <img src="{{url_for('static', filename='Icons/Favourite/False.png') }}" data-favimage="{{url_for('static', filename='Icons/Favourite/False.png')}}" alt="Favourite" class="MusicControlImage" id="FavImg">
         </button>
         <button>Loop</button>
-        <button>Restart</button>
+        <button class="MusicControlButton"  onclick="SetDuration(0)"><img src="{{url_for('static', filename='Icons/Rewind.png') }}" class="MusicControlImage" alt="Rewind"></button>
     </div>
     <hr>
     <div style="text-align: center;">

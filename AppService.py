@@ -105,6 +105,7 @@ def SearchSongForClient(SearchQuery : str,ShowFavourites = False):
 
                     SendToClients(DataToSend,SEARCHRESULTS)
             else:
+                Say("Showing Favorites")
                 Data = DataService.ReadJson(MusicService.FAVSONGPATH)
                 
                 
@@ -198,6 +199,7 @@ def App():
         elif Type == "SetFavourite": # Set song to be favourited
             if MusicService.SongInfo.SongStreamEnabled == True:
                 MusicService.ToggleFavourite(Data,MusicService.SongInfo.Name,MusicService.SongInfo.Author)
+                
 
                 if Data == MusicService.SongInfo.CurrentUrl and Data != "": # Prevent favouriting while invalid data.
 
