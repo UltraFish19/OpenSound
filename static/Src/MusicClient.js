@@ -85,7 +85,7 @@ MusicDetails = Data["Music"];
  if (SongName == "" ) { // Nothing is playinh
     SongNameLabel.textContent = "Nothing is playing";
 
- } else if (MusicDetails["SongLoading"] == true) { // Something is playing but it is loading
+ } else if (MusicDetails["SongLoaded"] == false) { // Something is playing but it is loading
     SongNameLabel.textContent  = `Loading ${SongName}` // Javascript F-String
  } else {
     SongNameLabel.textContent  = `Playing ${SongName}`
