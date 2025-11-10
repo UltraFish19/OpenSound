@@ -76,7 +76,7 @@ Socket.on("SearchResults",function(Data){ // For getting results.
 });
 
 
-Socket.on("ServerDetails",function(Data){
+Socket.on("ServerDetails",function(Data){ // Data from server every 0.2 secs.
 MusicDetails = Data["Music"]
 
  SongNameLabel.textContent = "Playing " + MusicDetails["Name"]
@@ -85,6 +85,7 @@ MusicDetails = Data["Music"]
  let TimePosition = MusicDetails["TimePosition"]
  Duration = MusicDetails["TimeLength"]
 
+ CurrentUrl = MusicDetails["CurrentUrl"]
 
  if (UserDragging == false) {
  let MusicProgressBarValue = (TimePosition / Duration) * 1000

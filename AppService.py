@@ -41,7 +41,7 @@ def SendServerDetailsToClient():
     MusicDetails["TimeLength"] = MusicService.SongInfo.Duration
     MusicDetails["IsPlaying"] = MusicService.SongInfo.CurrentSongPlaying
     MusicDetails["IsFavourited"] = MusicService.SongInfo.IsFavourited # If song is favourited or not. This is purely for the button.
-
+    MusicDetails["CurrentUrl"] = MusicService.SongInfo.CurrentUrl
     ServerDetails = {}
     ServerDetails["Music"] = MusicDetails
 
@@ -110,9 +110,10 @@ def SearchSongForClient(SearchQuery : str,ShowFavourites = False):
                 for I,SongUrl in enumerate(Data.keys(), start=1):
                     DataToSend = {}
                     ResultDict = {}
-                    ResultDict["Name"] = Data["Name"]
+                    SongData = Data[SongUrl]
+                    ResultDict["Name"] = SongData["Name"]
                     ResultDict["Duration"] = "WIP"
-                    ResultDict["Author"] = Data["Author"]
+                    ResultDict["Author"] = SongData["Author"]
                     ResultDict["Url"] = SongUrl
 
                     AdditionalDataDict = {}
@@ -125,6 +126,7 @@ def SearchSongForClient(SearchQuery : str,ShowFavourites = False):
                         AdditionalDataDict["RemovePreviousResults"] = False
 
                     DataToSend["Details"] = AdditionalDataDict
+                    DataToSend["Result"] = ResultDict
                     SendToClients(DataToSend,SEARCHRESULTS)
 
             
@@ -196,7 +198,7 @@ def App():
             if MusicService.SongInfo.SongStreamEnabled == True:
                 MusicService.ToggleFavourite(Data,MusicService.SongInfo.Name,MusicService.SongInfo.Author)
 
-                if Data == MusicService.SongInfo.CurrentUrl:
+                if Data == MusicService.SongInfo.CurrentUrl and Data != "": # Prevent favouriting while invalid data.
 
                     MusicService.SongInfo.IsFavourited = not MusicService.SongInfo.IsFavourited
         elif Type == "ShowFavourites": # Show songs that are favourited

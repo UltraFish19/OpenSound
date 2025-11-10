@@ -4,7 +4,8 @@
     "SongName" : "Song",
     "TimePosition" : 60,
     "TimeLength" : 120,
-    "IsFavourited" : false 
+    "IsFavourited" : false,
+    "CurrentUrl" : "http"
 }
 
 
