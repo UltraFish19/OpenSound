@@ -77,26 +77,37 @@ Socket.on("SearchResults",function(Data){ // For getting results.
 
 
 Socket.on("ServerDetails",function(Data){ // Data from server every 0.2 secs.
-MusicDetails = Data["Music"]
+MusicDetails = Data["Music"];
 
- SongNameLabel.textContent = "Playing " + MusicDetails["Name"]
+
+ var SongName = MusicDetails["Name"]
+
+ if (SongName == "" ) { // Nothing is playinh
+    SongNameLabel.textContent = "Nothing is playing";
+
+ } else if (MusicDetails["SongLoading"] == true) { // Something is playing but it is loading
+    SongNameLabel.textContent  = `Loading ${SongName}` // Javascript F-String
+ } else {
+    SongNameLabel.textContent  = `Playing ${SongName}`
+ }
+
  PlayButton.textContent = PlayButtonTexts[MusicDetails["IsPlaying"]] // Add the proper text for if it is paused or playing
  
- let TimePosition = MusicDetails["TimePosition"]
- Duration = MusicDetails["TimeLength"]
+ let TimePosition = MusicDetails["TimePosition"];
+ Duration = MusicDetails["TimeLength"];
 
- CurrentUrl = MusicDetails["CurrentUrl"]
+ CurrentUrl = MusicDetails["CurrentUrl"];
 
  if (UserDragging == false) {
- let MusicProgressBarValue = (TimePosition / Duration) * 1000
- MusicProgressBar.value = MusicProgressBarValue
+ let MusicProgressBarValue = (TimePosition / Duration) * 1000;
+ MusicProgressBar.value = MusicProgressBarValue;
 
  }
 
 if (MusicDetails["IsFavourited"] == true) {
-    FavouriteImg.src = "static/Icons/Favourite/True.png"
+    FavouriteImg.src = "static/Icons/Favourite/True.png";
 } else {
-    FavouriteImg.src = "static/Icons/Favourite/False.png"   
+    FavouriteImg.src = "static/Icons/Favourite/False.png";
 }
 
 

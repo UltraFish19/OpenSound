@@ -1,38 +1,57 @@
 import pyttsx3
 import MusicService
+import threading
+import queue
 
+# Use a queue to send speech tasks to a dedicated thread
+TtsQueue = queue.Queue()
+TtsThread: threading.Thread = None
 
-if __name__ == "__main__": # This will prevent the file from being run directly
-    print("This is a module, and should not be run directly.") # Warn the user if they try to run this file directly
-    exit() # Exit if this file is run directly
-
-
-
-
-
-
-
-
-
-
-def Say(Text : str): # Text to speech
-
-
+def TtsWorkerTask():
+    """A dedicated worker thread that handles all TTS requests from the queue."""
+    TtsEngine = None
     try:
-        Engine = pyttsx3.init()
-        MusicService.AudioPlayer.volume = 0.5 # Set volume lower so people can actually hear the TTS
-        Engine.say(Text)
-        Engine.runAndWait()
+        TtsEngine = pyttsx3.init()
+    except RuntimeError:
+        print("TTS Worker failed to initialize engine. TTS will be disabled.")
+        return # Exit the thread
+    
+    while True:
+        try:
+            # Wait for the next speech task
+            TextToSay = TtsQueue.get()
 
-        del Engine
-        
-        MusicService.AudioPlayer.volume = 1.0
-    except:
-        print("TTS already active")
+            if TextToSay is None:
+                # A "None" item is our signal to stop the thread
+                TtsQueue.task_done()
+                break
+            
+            # We have a task, process it
+            MusicService.AudioPlayer.volume = 0.5
+            TtsEngine.say(TextToSay)
+            TtsEngine.runAndWait()
+            MusicService.AudioPlayer.volume = 1.0
+            
+            TtsQueue.task_done()
+
+        except Exception as e:
+            print(f"Error in TtsWorkerTask: {e}")
+            if TtsQueue.unfinished_tasks > 0:
+                TtsQueue.task_done()
+
+# Start the single, dedicated worker thread
+# daemon=True means it will auto-exit when the main app closes
+TtsThread = threading.Thread(target=TtsWorkerTask, daemon=True)
+TtsThread.start()
 
 
-def SayThenLog(Text : str): # Text to speech then also print it
+if __name__ == "__main__":
+    print("This is a module, and should not be run directly.")
+    exit()
+
+def Say(Text: str):    
+    TtsQueue.put(Text)
+
+def SayThenLog(Text: str):
     Say(Text)
     print(Text)
-
-

@@ -42,6 +42,7 @@ def SendServerDetailsToClient():
     MusicDetails["IsPlaying"] = MusicService.SongInfo.CurrentSongPlaying
     MusicDetails["IsFavourited"] = MusicService.SongInfo.IsFavourited # If song is favourited or not. This is purely for the button.
     MusicDetails["CurrentUrl"] = MusicService.SongInfo.CurrentUrl
+    MusicDetails["SongLoaded"] = MusicService.SongInfo.SongStreamEnabled
     ServerDetails = {}
     ServerDetails["Music"] = MusicDetails
 

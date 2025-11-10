@@ -30,7 +30,7 @@ CachePath = ""
 SongName = R"\Song.m4a" # .M4a name
 ConvertedSongName = R"\Song.wav" # Name of song when converted to .WAV
 MAXDURATION = 1200 # The maximum song length in seconds
-NOSONGPLAYING = "Nothing" # The text that shows when no long is playing
+NOSONGPLAYING = "" # The text that shows when no long is playing
 
 
 
