@@ -211,7 +211,7 @@ def FetchSong(Link : str,Announce = False): #This will download a the song from 
 
         Length = YoutubeSong.length
 
-
+        
 
 
         if Length > MAXDURATION: # Prevent anyone from downloading a 24 hour long video.
@@ -223,15 +223,16 @@ def FetchSong(Link : str,Announce = False): #This will download a the song from 
         Title = YoutubeSong.title
         Author = YoutubeSong.author
 
+        SongInfo.Author = Author
+        SongInfo.CurrentUrl = Link
+
+        SongInfo.Name = Title
         SongInfo.IsFavourited = CheckIfFavourited(SongInfo.CurrentUrl)
 
         Stream = YoutubeSong.streams.get_audio_only() # Get the audio only stream
         Stream.download(output_path=CachePath,filename=SongName) # Download the audio to the cache folder and rename it
         
-        SongInfo.Author = Author
-        SongInfo.CurrentUrl = Link
-
-        SongInfo.Name = Title
+ 
         SongInfo.Duration = -10000 # Force bar to the left.
 
         if Announce == True:

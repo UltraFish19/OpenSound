@@ -165,6 +165,8 @@ function AddResultsList(Text,Url){ //To do later.
     const ListItem = document.createElement("li")
     const ListButton = document.createElement("Button")
 
+    ListItem.style = "list-style-type: none;" //Remove list number.
+
     ListButton.textContent = Text
     ListButton.className = "SearchResultsList"
     ListButton.id = Url // Store The url as the ID

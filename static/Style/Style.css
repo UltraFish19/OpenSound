@@ -84,7 +84,29 @@
     margin-top: 5px;
     margin-bottom: 5px;
     text-align: center;
+    width: 50%;
+    height: 5%;
+    background-color: #405cf5;
+    color: #fff;
+    border-radius: 6px;
+    backface-visibility: hidden;
+    outline: none;
+    appearance: button;
+    overflow: hidden;
+    border: none;
+    transition: height 0.1s ease-in;
+    
 }
+
+
+.SearchResultsList:hover{
+  height: 10%;
+  transition: height 0.1s ease-in;
+
+}
+
+
+
 
 .InputBox {
 
