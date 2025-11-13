@@ -222,7 +222,7 @@ def App():
 
     WebSocket.start_background_task(SendDataToClientLoop)
 
-    WebSocket.run(App,host="0.0.0.0",port=5000)
+    WebSocket.run(App,host="0.0.0.0",port=5000,allow_unsafe_werkzeug=True)
 
 
     

@@ -7,6 +7,10 @@ if __name__ == "__main__": # This will prevent the file from being run directly
 
 import json
 
+
+InternalSettings = json.load(open(R"Data\InternalSettings.json","r"))
+
+
 def ReadJson(Path : str) -> dict:
     with open(Path,"r") as File:
         return json.load(File)
@@ -14,3 +18,6 @@ def ReadJson(Path : str) -> dict:
 def SaveJson(Path : str, Data : dict):
     with open(Path,"w") as File:
         json.dump(Data,File,indent=3)
+
+def GetCorrectPath():
+    pass

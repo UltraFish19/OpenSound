@@ -1,5 +1,6 @@
 import pyttsx3
 import MusicService
+import DataService
 import threading
 import queue
 
@@ -9,6 +10,9 @@ TTSEnabled = False
 # Use a queue to send speech tasks to a dedicated thread
 TtsQueue = queue.Queue()
 TtsThread: threading.Thread = None
+
+TTSEnabled = True
+
 
 def TtsWorkerTask():
     """A dedicated worker thread that handles all TTS requests from the queue."""

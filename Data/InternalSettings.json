@@ -1,6 +1,7 @@
 {
-    "MusicCacheLocation" : "C:\\Users\\Romon\\Opensound\\OpenSound\\Cache\\Music",
-    "FFMpegConverterLocation" : "C:\\Users\\Romon\\Downloads\\ffmpeg-2025-10-30-git-00c23bafb0-essentials_build\\bin\\ffmpeg.exe"
+    "MusicCacheLocation" : "C:\\Users\\rmohamma1884\\OneDrive - Hamilton Wentworth District School Board\\Opensound\\OpenSound\\Cache\\Music",
+    "FFMpegConverterLocation" : "C:\\Users\\rmohamma1884\\Downloads\\ffmpeg-8.0-essentials_build\\ffmpeg-8.0-essentials_build\\bin\\ffmpeg.exe",
+    "IsPI" : false
 
 
 
