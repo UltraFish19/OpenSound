@@ -86,6 +86,7 @@ def ToggleFavourite(Url,Name ="Unknown",Author = "Unknown"): # If faved it will 
 
 def ConvertCodec(YoutubeAudioPath : str): # This will convert from .M4A to .WAV which works on Windows
     try:
+        assert(DataService.InternalSettings["IsPI"] == False)
         M4AAudio = pydub.AudioSegment.from_file(YoutubeAudioPath, codec="aac")
         M4AAudio.export(YoutubeAudioPath.replace(".m4a", ".wav"), format="wav") # Export the audio file as a .WAV file
         os.remove(YoutubeAudioPath) # Remove the old .M4A file
@@ -98,7 +99,9 @@ def ConvertCodec(YoutubeAudioPath : str): # This will convert from .M4A to .WAV 
 def InitAudio(InternalData): # This will initialize the audio system
     global CachePath
     CachePath = InternalData["MusicCacheLocation"]
-    pydub.AudioSegment.converter = InternalData["FFMpegConverterLocation"]
+
+    if DataService.InternalSettings["IsPI"] == False: # We don't need to convert on the PI
+        pydub.AudioSegment.converter = InternalData["FFMpegConverterLocation"]
     
 
 
@@ -152,7 +155,7 @@ def PlaySong(AudioPath, AlreadyConverted = False): # This will play the song fro
 
     AudioPlayer.queue(AudioSource)
 
-    AudioPlayer.play() # Play the song
+    AudioPlayer.play() # Play the song, If it is a raspberry pi it will skip the conversion
 
     SongInfo.CurrentSongPlaying = True
     SongInfo.SongStreamEnabled = True
@@ -238,7 +241,7 @@ def FetchSong(Link : str,Announce = False): #This will download a the song from 
         if Announce == True:
             Say(f"Playing {Title} by {Author}" )
 
-        PlaySong(CachePath+SongName) # Play the song from the cache folder
+        PlaySong(CachePath+SongName,AlreadyConverted = DataService.InternalSettings["IsPI"]) # Play the song from the cache folder
     except Exception as e:
         print(f"Failed to download song. \n {e}")
         if Announce == True:

@@ -13,7 +13,8 @@ import os
 
 
 def GetCorrectPath(Path : str):
-    return os.path.abspath(Path)
+    ScriptDirectory = os.path.dirname(os.path.abspath(__file__))
+    return os.path.join(ScriptDirectory,Path)
 
 InternalSettings = json.load(open(GetCorrectPath(R"Data/InternalSettings.json"),"r"))
 
