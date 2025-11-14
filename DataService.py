@@ -6,9 +6,16 @@ if __name__ == "__main__": # This will prevent the file from being run directly
     exit() # Exit if this file is run directly
 
 import json
+import enum 
+import os
 
 
-InternalSettings = json.load(open(R"Data\InternalSettings.json","r"))
+
+
+def GetCorrectPath(Path : str):
+    return os.path.abspath(Path)
+
+InternalSettings = json.load(open(GetCorrectPath(R"Data/InternalSettings.json"),"r"))
 
 
 def ReadJson(Path : str) -> dict:
@@ -19,5 +26,3 @@ def SaveJson(Path : str, Data : dict):
     with open(Path,"w") as File:
         json.dump(Data,File,indent=3)
 
-def GetCorrectPath():
-    pass

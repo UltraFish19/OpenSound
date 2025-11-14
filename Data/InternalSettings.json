@@ -1,7 +1,8 @@
 {
     "MusicCacheLocation" : "C:\\Users\\rmohamma1884\\OneDrive - Hamilton Wentworth District School Board\\Opensound\\OpenSound\\Cache\\Music",
     "FFMpegConverterLocation" : "C:\\Users\\rmohamma1884\\Downloads\\ffmpeg-8.0-essentials_build\\ffmpeg-8.0-essentials_build\\bin\\ffmpeg.exe",
-    "IsPI" : false
+    "IsPI" : false,
+    "TTSEnabled" : false
 
 
 

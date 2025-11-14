@@ -27,8 +27,8 @@ from TTSService import Say
 
 
 CachePath = ""
-SongName = R"\Song.m4a" # .M4a name
-ConvertedSongName = R"\Song.wav" # Name of song when converted to .WAV
+SongName = R"Song.m4a" # .M4a name
+ConvertedSongName = R"Song.wav" # Name of song when converted to .WAV
 MAXDURATION = 1200 # The maximum song length in seconds
 NOSONGPLAYING = "" # The text that shows when no long is playing
 
@@ -56,7 +56,7 @@ class SongTooLongError(Exception):
     def __init__(Self,Message=f"Your song is too long, the maximum length is {MAXDURATION} secs"):
         super().__init__(Message)
 
-FAVSONGPATH = "Data\Favorites.json" # Where the file to store favourited songs is stored.
+FAVSONGPATH = DataService.GetCorrectPath("Data/Favorites.json") # Where the file to store favourited songs is stored.
 
 def CheckIfFavourited(Url):
     Data = DataService.ReadJson(FAVSONGPATH) # If url exists then it is favourited.
