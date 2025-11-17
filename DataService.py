@@ -6,7 +6,6 @@ if __name__ == "__main__": # This will prevent the file from being run directly
     exit() # Exit if this file is run directly
 
 import json
-import enum 
 import os
 
 

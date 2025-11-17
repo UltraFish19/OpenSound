@@ -221,6 +221,9 @@ document.addEventListener("keydown",function(Event){ // Press enter to search so
     if (Event.key === "Enter") {
         Event.preventDefault(); // Prevent it from activating when typing and stuff
         OnSubmit();
+    } else if (Event.key === " "){
+        Event.preventDefault(); // Prevent it from activating when typing and stuff
+        ToggleSongPlaying() // Pause or play audio.
     }
 });
 

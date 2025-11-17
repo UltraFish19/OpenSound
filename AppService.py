@@ -1,5 +1,5 @@
 import datetime
-from flask import Flask,render_template, request, jsonify
+from flask import Flask,render_template
 from flask_socketio import SocketIO, emit
 import threading
 import DataService
