@@ -6,7 +6,8 @@
     "TimeLength" : 120,
     "IsFavourited" : false,
     "CurrentUrl" : "http",
-    "SongLoaded" : true
+    "SongLoaded" : true,
+    "IsLooping" : false
 }
 
 

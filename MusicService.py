@@ -51,6 +51,7 @@ class SongInfo():
     Author = "Unknown"
     IsFavourited = False
     CurrentUrl = ""
+    IsLooping = True
 
 class SongTooLongError(Exception):
     def __init__(Self,Message=f"Your song is too long, the maximum length is {MAXDURATION} secs"):
@@ -144,6 +145,7 @@ def PlaySong(AudioPath, AlreadyConverted = False): # This will play the song fro
 
   
     AudioPlayer = pyglet.media.Player() # Create player object.
+    AudioPlayer.loop = SongInfo.IsLooping
 
 
     AudioFileHandle = open(ConvertedPath,"rb") 
@@ -235,7 +237,6 @@ def FetchSong(Link : str,Announce = False): #This will download a the song from 
         Stream = YoutubeSong.streams.get_audio_only() # Get the audio only stream
         Stream.download(output_path=CachePath,filename=SongName) # Download the audio to the cache folder and rename it
         
- 
         SongInfo.Duration = -10000 # Force bar to the left.
 
         if Announce == True:

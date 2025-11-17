@@ -11,6 +11,8 @@ let Duration;
 
 let FavouriteImg;
 
+let MusicDurationLabel;
+
 //--------------------------------<Event Listeners>-------------------------------------------
 
 document.addEventListener("DOMContentLoaded", function() { //Wait for DOM to load
@@ -20,6 +22,7 @@ document.addEventListener("DOMContentLoaded", function() { //Wait for DOM to loa
     MusicProgressBar = document.getElementById("MusicProgressBar");
     FavouriteImg = document.getElementById("FavImg")
     MusicProgressBar.value = 0
+    MusicDurationLabel = document.getElementById("MusicDurationLabel")
 
 
 MusicProgressBar.addEventListener("change", () => {
@@ -98,6 +101,8 @@ MusicDetails = Data["Music"];
 
  CurrentUrl = MusicDetails["CurrentUrl"];
 
+ MusicDurationLabel.textContent = FormatTime(TimePosition) + "/" + FormatTime(Duration)
+
  if (UserDragging == false) {
  let MusicProgressBarValue = (TimePosition / Duration) * 1000;
  MusicProgressBar.value = MusicProgressBarValue;
@@ -116,6 +121,33 @@ if (MusicDetails["IsFavourited"] == true) {
 
 
 //--------------------------------<Functions>-------------------------------------------
+
+function FormatTime(Seconds){
+
+  if(Seconds < 0){
+    return "00:00"
+  }
+
+  const TotalSeconds = Math.floor(Math.abs(Seconds));
+  
+  const Hours = Math.floor(TotalSeconds / 3600);
+  const Minutes = Math.floor((TotalSeconds % 3600) / 60);
+  const RemainingSeconds = TotalSeconds % 60;
+
+  // Helper function also using PascalCase (or standard camelCase for a local helper)
+  const PadNumber = (Num) => String(Num).padStart(2, '0');
+
+  if (Hours > 0) {
+    // Format as H:MM:SS
+    return `${Hours}:${PadNumber(Minutes)}:${PadNumber(RemainingSeconds)}`;
+  } else {
+    // Format as MM:SS
+    return `${PadNumber(Minutes)}:${PadNumber(RemainingSeconds)}`;
+  }
+}
+
+
+
 
 function SetDuration(SetTo){
     Socket.emit(

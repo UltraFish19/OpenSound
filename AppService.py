@@ -214,7 +214,8 @@ def App():
     def SendDataToClientLoop():
         while True:
             SendServerDetailsToClient()
-            MusicService.Clock.tick()
+            MusicService.Clock.tick() # Tick Pyglet clock
+            MusicService.pyglet.app.platform_event_loop.dispatch_posted_events() # Update events
             WebSocket.sleep(0.2)
         
 
