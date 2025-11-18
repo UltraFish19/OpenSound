@@ -28,13 +28,18 @@
 
     </div>
     <div class= "MusicControlContainer">
+
+        <button class="MusicControlButton"  onclick="SetDuration(0)"><img src="{{url_for('static', filename='Icons/Rewind.png') }}" class="MusicControlImage" alt="Rewind"></button>
+
         <button class="MusicControlButton" onclick="FavouriteSong()">
         <img src="{{url_for('static', filename='Icons/Favourite/False.png') }}" data-favimage="{{url_for('static', filename='Icons/Favourite/False.png')}}" alt="Favourite" class="MusicControlImage" id="FavImg">
         </button>
+
         <button class="MusicControlButton" onclick="LoopSong()">
             <img src="{{url_for('static', filename='Icons/Loop/False.png') }}" data-favimage="{{url_for('static', filename='Icons/Loop/False.png')}}" alt="Loop Music" class="MusicControlImage" id="LoopImg">
         </button>
-        <button class="MusicControlButton"  onclick="SetDuration(0)"><img src="{{url_for('static', filename='Icons/Rewind.png') }}" class="MusicControlImage" alt="Rewind"></button>
+
+        
     </div>
     <hr>
     <div style="text-align: center;">

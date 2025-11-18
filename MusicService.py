@@ -31,7 +31,7 @@ SongName = R"Song.m4a" # .M4a name
 ConvertedSongName = R"Song.wav" # Name of song when converted to .WAV
 MAXDURATION = 1200 # The maximum song length in seconds
 NOSONGPLAYING = "" # The text that shows when no long is playing
-
+DIRECTPLAYPREFIX = "https://www.yo" # If url starts with this it will skip searching and directly play (if video exists)
 
 
 

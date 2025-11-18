@@ -60,6 +60,10 @@ SearchDebounce = False # Add a debounce to prevent the function from running whi
 def SearchSongForClient(SearchQuery : str,ShowFavourites = False):
     global SearchDebounce
 
+    if SearchQuery.startswith(MusicService.DIRECTPLAYPREFIX): # Directly play from URL
+        PlaySoundForClient(SearchQuery) # In this case the Query is the song Url
+        return
+
     try: 
 
         if SearchDebounce == False:
