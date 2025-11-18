@@ -10,6 +10,7 @@ let MusicProgressBar;
 let Duration;
 
 let FavouriteImg;
+let LoopImg;
 
 let MusicDurationLabel;
 
@@ -21,6 +22,7 @@ document.addEventListener("DOMContentLoaded", function() { //Wait for DOM to loa
     PlayButton = document.getElementById("PlayButton");
     MusicProgressBar = document.getElementById("MusicProgressBar");
     FavouriteImg = document.getElementById("FavImg")
+    LoopImg = document.getElementById("LoopImg")
     MusicProgressBar.value = 0
     MusicDurationLabel = document.getElementById("MusicDurationLabel")
 
@@ -115,6 +117,11 @@ if (MusicDetails["IsFavourited"] == true) {
     FavouriteImg.src = "static/Icons/Favourite/False.png";
 }
 
+if (MusicDetails["IsLooping"]  == true) {
+    LoopImg.src = "static/Icons/Loop/True.png";
+} else {
+    LoopImg.src = "static/Icons/Loop/False.png";
+}
 
 });
 
@@ -186,6 +193,18 @@ function FavouriteSong(){
         {
             RequestType : "SetFavourite",
             Data : CurrentUrl
+        }
+
+
+    )
+}
+
+function LoopSong(){
+        Socket.emit(
+        "ClientSubmit",
+        {
+            RequestType : "ToggleLoop",
+            Data : "I want to keep listening to that masterpiece"
         }
 
 

@@ -51,7 +51,7 @@ class SongInfo():
     Author = "Unknown"
     IsFavourited = False
     CurrentUrl = ""
-    IsLooping = True
+    IsLooping = False
 
 class SongTooLongError(Exception):
     def __init__(Self,Message=f"Your song is too long, the maximum length is {MAXDURATION} secs"):
@@ -80,7 +80,6 @@ def ToggleFavourite(Url,Name ="Unknown",Author = "Unknown"): # If faved it will 
         Data.pop(Url)
         
     DataService.SaveJson(FAVSONGPATH,Data) # Finish by saving changes
-
 
 
 

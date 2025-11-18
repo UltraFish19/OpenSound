@@ -43,6 +43,7 @@ def SendServerDetailsToClient():
     MusicDetails["IsFavourited"] = MusicService.SongInfo.IsFavourited # If song is favourited or not. This is purely for the button.
     MusicDetails["CurrentUrl"] = MusicService.SongInfo.CurrentUrl
     MusicDetails["SongLoaded"] = MusicService.SongInfo.SongStreamEnabled
+    MusicDetails["IsLooping"] = MusicService.SongInfo.IsLooping # Also for the button appearance.
     ServerDetails = {}
     ServerDetails["Music"] = MusicDetails
 
@@ -150,6 +151,11 @@ def PauseSongForClient():
 def SetSongDurationForClient(To):
     MusicService.SetAudioDuration(float(To))
 
+def ToggleLoopForClient(): # Make song looped or not
+    MusicService.SongInfo.IsLooping = not MusicService.SongInfo.IsLooping # Inverse the boolean
+    if MusicService.AudioPlayer:
+        MusicService.AudioPlayer.loop = MusicService.SongInfo.IsLooping
+
 def App(): 
 
     global WebSocket
@@ -206,6 +212,8 @@ def App():
                     MusicService.SongInfo.IsFavourited = not MusicService.SongInfo.IsFavourited
         elif Type == "ShowFavourites": # Show songs that are favourited
             SearchSongForClient("",True)
+        elif Type == "ToggleLoop":
+            ToggleLoopForClient()
 
         SendServerDetailsToClient()
         emit(GENERICRESPONSE,{"Status" : "Got Request"})
