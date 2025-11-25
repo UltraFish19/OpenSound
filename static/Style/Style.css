@@ -244,3 +244,14 @@
   opacity: 0.7;
 }
 
+.header-row {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.SystemControls {
+  margin-left: auto;   /* This still pushes the controls to the right */
+  padding-right: 20px;  /* Optional: Adds some space from the edge */
+  position: absolute;
+}

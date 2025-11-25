@@ -10,14 +10,26 @@
     <script src="{{ url_for('static',filename='Src/SocketIO.js')}}"></script>
     <script src="{{ url_for('static',filename='Src/MusicClient.js')}}"></script>
     <header>
-        <h1 class="Title">Opensound</h1>
-        <button class="Button" onclick='
-        
-        var OldWindow = window.location.href
+        <div>
+            <h1 class="Title">Opensound</h1> <div class="header-row">
+                <button class="Button" onclick='
+                
+                var OldWindow = window.location.href
 
-        var NewWindow = OldWindow.replace("Music","")
-        window.location.replace(NewWindow)      
-        '>Home</button>
+                var NewWindow = OldWindow.replace("Music","")
+                window.location.replace(NewWindow)      
+                '>Home</button>
+
+                <div class="SystemControls">
+                    <div display: flex>
+                        <h1>Volume</h1>
+                        <input type="range" max="100" min="0">
+                    </div>
+                    
+                </div>
+            </div>
+            
+        </div>
         <hr>
     </header>
     <h4 class="Main" id="SongName">Loading Music...</h4>
