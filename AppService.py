@@ -44,6 +44,7 @@ def SendServerDetailsToClient():
     MusicDetails["CurrentUrl"] = MusicService.SongInfo.CurrentUrl
     MusicDetails["SongLoaded"] = MusicService.SongInfo.SongStreamEnabled
     MusicDetails["IsLooping"] = MusicService.SongInfo.IsLooping # Also for the button appearance.
+    MusicDetails["MasterVolume"] = MusicService.SongInfo.MasterVolume
     ServerDetails = {}
     ServerDetails["Music"] = MusicDetails
 
@@ -160,6 +161,10 @@ def ToggleLoopForClient(): # Make song looped or not
     if MusicService.AudioPlayer:
         MusicService.AudioPlayer.loop = MusicService.SongInfo.IsLooping
 
+def SetVolumeForClient(To):
+    MusicService.SongInfo.MasterVolume = To
+    MusicService.SetVolume() # Actually makes it happen to everything
+
 def App(): 
 
     global WebSocket
@@ -218,6 +223,9 @@ def App():
             SearchSongForClient("",True)
         elif Type == "ToggleLoop":
             ToggleLoopForClient()
+        elif Type == "SetVolume":
+            SetVolumeForClient(Data)
+            
 
         SendServerDetailsToClient()
         emit(GENERICRESPONSE,{"Status" : "Got Request"})

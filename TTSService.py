@@ -10,7 +10,7 @@ TTSEnabled = DataService.InternalSettings["TTSEnabled"]
 # Use a queue to send speech tasks to a dedicated thread
 TTSQueue = queue.Queue()
 TTSThread: threading.Thread = None
-
+SpeechVolume = 0.5
 
 
 def TtsWorkerTask():
@@ -33,11 +33,11 @@ def TtsWorkerTask():
                 break
             
             # We have a task, process it
-            MusicService.AudioPlayer.volume = 0.5
+            MusicService.AudioPlayer.volume = MusicService.SongInfo.MasterVolume / 2
             TTSEngine.say(TextToSay)
         
             TTSEngine.runAndWait()
-            MusicService.AudioPlayer.volume = 1.0
+            MusicService.AudioPlayer.volume = MusicService.SongInfo.MasterVolume
             
             TTSQueue.task_done()
 

@@ -14,6 +14,8 @@ let LoopImg;
 
 let MusicDurationLabel;
 
+let VolumeSlider;
+
 //--------------------------------<Event Listeners>-------------------------------------------
 
 document.addEventListener("DOMContentLoaded", function() { //Wait for DOM to load
@@ -25,6 +27,8 @@ document.addEventListener("DOMContentLoaded", function() { //Wait for DOM to loa
     LoopImg = document.getElementById("LoopImg")
     MusicProgressBar.value = 0
     MusicDurationLabel = document.getElementById("MusicDurationLabel")
+    VolumeSlider = document.getElementById("VolumeSlider")
+    
 
 
 MusicProgressBar.addEventListener("change", () => {
@@ -32,18 +36,35 @@ MusicProgressBar.addEventListener("change", () => {
     const NewTime = Percentage * Duration;
     
     SetDuration(NewTime);
-    UserDragging = false;
+    UserDraggingPB = false;
 });
 
-MusicProgressBar.addEventListener("mousedown", () => { UserDragging = true; });
-MusicProgressBar.addEventListener("touchstart", () => { UserDragging = true; });
+VolumeSlider.addEventListener("change",() => {
+Socket.emit(
+            "ClientSubmit",
+        {
+            RequestType : "SetVolume",
+            Data : parseInt(VolumeSlider.value)
+        }
+)
+UserDraggingVC = false;
+});
+
+
+
+MusicProgressBar.addEventListener("mousedown", () => { UserDraggingPB = true; });
+MusicProgressBar.addEventListener("touchstart", () => { UserDraggingPB = true; });
+
+VolumeSlider.addEventListener("mousedown", () => { UserDraggingVC = true; });
+VolumeSlider.addEventListener("touchstart", () => { UserDraggingVC = true; });
+
 
 
 });
 
 const PlayButtonTexts = {"true" : "Pause","false" : "Play"}
-let UserDragging = false; // If the user is dragging or not
-
+let UserDraggingPB = false; // If the user is dragging Music Progress bar or not
+let UserDraggingVC = false // If the user is dragging the Volume control or not
 
 
 
@@ -105,10 +126,15 @@ MusicDetails = Data["Music"];
 
  MusicDurationLabel.textContent = FormatTime(TimePosition) + "/" + FormatTime(Duration)
 
- if (UserDragging == false) {
+ if (UserDraggingPB == false) {
  let MusicProgressBarValue = (TimePosition / Duration) * 1000;
  MusicProgressBar.value = MusicProgressBarValue;
 
+ }
+
+ if (UserDraggingVC == false){
+    console.log("WORK")
+    VolumeSlider.value = MusicDetails["MasterVolume"] 
  }
 
 if (MusicDetails["IsFavourited"] == true) {
@@ -235,15 +261,24 @@ function AddResultsList(Text,Url){ //To do later.
 
 function DisablePlayingFeatures(To){} // Disable or Enable play button and everything else
 
+    
 
 document.addEventListener("keydown",function(Event){ // Press enter to search song
-    if (Event.key === "Enter") {
+
+    Target = Event.target
+    IsTyping = Target.tagName === "INPUT" || Target.tagName === "TEXTAREA" || Target.isContentEditable;
+
+       if (Event.key === "Enter") {
         Event.preventDefault(); // Prevent it from activating when typing and stuff
-        OnSubmit();
-    } else if (Event.key === " "){
-        Event.preventDefault(); // Prevent it from activating when typing and stuff
-        ToggleSongPlaying() // Pause or play audio.
-    }
+        OnSubmit()
+       }
+
+    if (IsTyping == true){ return }
+
+    if (Event.key === " "){
+            Event.preventDefault(); // Prevent it from activating when typing and stuff
+            ToggleSongPlaying() // Pause or play audio.
+        }
 });
 
 

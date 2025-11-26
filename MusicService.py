@@ -16,6 +16,7 @@ import pyglet
 from pytubefix import YouTube # Import YouTube and Search from the module
 from pytubefix.contrib.search import Search, Filter
 import pydub # Audio libarary to handle audio files
+import TTSService
 from TTSService import Say
 
 
@@ -52,12 +53,23 @@ class SongInfo():
     IsFavourited = False
     CurrentUrl = ""
     IsLooping = False
+    MasterVolume = 50 #Starts at 50, max is 100, and min is 0
 
 class SongTooLongError(Exception):
     def __init__(Self,Message=f"Your song is too long, the maximum length is {MAXDURATION} secs"):
         super().__init__(Message)
 
 FAVSONGPATH = DataService.GetCorrectPath("Data/Favorites.json") # Where the file to store favourited songs is stored.
+
+
+def SetVolume():
+    Volume = (SongInfo.MasterVolume / 100)
+    print(Volume)
+    if AudioPlayer:
+        AudioPlayer.volume = (Volume ** 1.4)
+        print(AudioPlayer.volume)
+    
+    TTSService.SpeechVolume = Volume
 
 def CheckIfFavourited(Url):
     Data = DataService.ReadJson(FAVSONGPATH) # If url exists then it is favourited.
@@ -145,6 +157,7 @@ def PlaySong(AudioPath, AlreadyConverted = False): # This will play the song fro
   
     AudioPlayer = pyglet.media.Player() # Create player object.
     AudioPlayer.loop = SongInfo.IsLooping
+    AudioPlayer.volume = ((SongInfo.MasterVolume /100) ** 1.4)
 
 
     AudioFileHandle = open(ConvertedPath,"rb") 
