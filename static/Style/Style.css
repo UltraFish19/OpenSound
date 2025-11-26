@@ -235,9 +235,21 @@
    border: none;
 }
 
+
 .MusicControlImage{
   width: 25;
   height: 25;
+  user-select: none;
+  -webkit-user-drag: none;
+
+}
+
+.OtherIcons{
+  width: 25;
+  height: 25;
+  user-select: none;
+  -webkit-user-drag: none;
+  margin: 0 auto;
 }
 
 .MusicControlImage:hover{
@@ -254,4 +266,5 @@
   margin-left: auto;   /* This still pushes the controls to the right */
   padding-right: 20px;  /* Optional: Adds some space from the edge */
   position: absolute;
+  vertical-align:middle;
 }

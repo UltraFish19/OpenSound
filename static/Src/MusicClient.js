@@ -1,1 +1,288 @@
-const Socket=io();let SongNameLabel,PlayButton,MusicProgressBar,Duration,FavouriteImg,LoopImg,MusicDurationLabel,CurrentUrl="";document.addEventListener("DOMContentLoaded",(function(){SongNameLabel=document.getElementById("SongName"),PlayButton=document.getElementById("PlayButton"),MusicProgressBar=document.getElementById("MusicProgressBar"),FavouriteImg=document.getElementById("FavImg"),LoopImg=document.getElementById("LoopImg"),MusicProgressBar.value=0,MusicDurationLabel=document.getElementById("MusicDurationLabel"),MusicProgressBar.addEventListener("change",(()=>{SetDuration(parseInt(MusicProgressBar.value)/1e3*Duration),UserDragging=!1})),MusicProgressBar.addEventListener("mousedown",(()=>{UserDragging=!0})),MusicProgressBar.addEventListener("touchstart",(()=>{UserDragging=!0}))}));const PlayButtonTexts={true:"Pause",false:"Play"};let UserDragging=!1;function FormatTime(e){if(e<0)return"00:00";const t=Math.floor(Math.abs(e)),n=Math.floor(t/3600),o=Math.floor(t%3600/60),a=t%60,i=e=>String(e).padStart(2,"0");return n>0?`${n}:${i(o)}:${i(a)}`:`${i(o)}:${i(a)}`}function SetDuration(e){Socket.emit("ClientSubmit",{RequestType:"SetDuration",Data:e})}function ClearResultsList(){document.getElementById("SearchResultsContainer").innerHTML=""}function PlaySong(e){CurrentUrl=e,Socket.emit("ClientSubmit",{RequestType:"PlaySong",Data:e})}function FavouriteSong(){Socket.emit("ClientSubmit",{RequestType:"SetFavourite",Data:CurrentUrl})}function LoopSong(){Socket.emit("ClientSubmit",{RequestType:"ToggleLoop",Data:"I want to keep listening to that masterpiece"})}function AddResultsList(e,t){const n=document.getElementById("SearchResultsContainer"),o=document.createElement("li"),a=document.createElement("Button");o.style="list-style-type: none;",a.textContent=e,a.className="SearchResultsList",a.id=t,a.onclick=function(){PlaySong(this.id)},o.appendChild(a),n.appendChild(o)}function DisablePlayingFeatures(e){}function ToggleSongPlaying(){Socket.emit("ClientSubmit",{RequestType:"PauseSong",Data:"PAUSE THAT SH*T"})}function OnSubmit(){var e=document.getElementById("MusicSearch");ClearResultsList();var t={RequestType:"SearchSongs",Data:e.value};Socket.emit("ClientSubmit",t)}function ShowFavourites(){Socket.emit("ClientSubmit",{RequestType:"ShowFavourites",Data:"PLZ PLZ PLZ"})}Socket.on("connect",(function(){console.log("Connected succesfully")})),Socket.on("GenericResponse",(function(e){console.log("Server Message: "+e.Status)})),Socket.on("SearchResults",(function(e){Result=e.Result,Details=e.Details,!0===Details.RemovePreviousResults&&ClearResultsList(),AddResultsList(Result.Name+" by "+Result.Author,Result.Url)})),Socket.on("ServerDetails",(function(e){MusicDetails=e.Music;var t=MusicDetails.Name;""==t?SongNameLabel.textContent="Nothing is playing":0==MusicDetails.SongLoaded?SongNameLabel.textContent=`Loading ${t}`:SongNameLabel.textContent=`Playing ${t}`,PlayButton.textContent=PlayButtonTexts[MusicDetails.IsPlaying];let n=MusicDetails.TimePosition;if(Duration=MusicDetails.TimeLength,CurrentUrl=MusicDetails.CurrentUrl,MusicDurationLabel.textContent=FormatTime(n)+"/"+FormatTime(Duration),0==UserDragging){let e=n/Duration*1e3;MusicProgressBar.value=e}1==MusicDetails.IsFavourited?FavouriteImg.src="static/Icons/Favourite/True.png":FavouriteImg.src="static/Icons/Favourite/False.png",1==MusicDetails.IsLooping?LoopImg.src="static/Icons/Loop/True.png":LoopImg.src="static/Icons/Loop/False.png"})),document.addEventListener("keydown",(function(e){"Enter"===e.key?(e.preventDefault(),OnSubmit()):" "===e.key&&(e.preventDefault(),ToggleSongPlaying())}));
+// Music player
+
+
+const Socket = io(); //The websocket
+let CurrentUrl = ""
+
+let SongNameLabel;
+let PlayButton;
+let MusicProgressBar;
+let Duration;
+
+let FavouriteImg;
+let LoopImg;
+
+let MusicDurationLabel;
+
+//--------------------------------<Event Listeners>-------------------------------------------
+
+document.addEventListener("DOMContentLoaded", function() { //Wait for DOM to load
+
+    SongNameLabel = document.getElementById("SongName");
+    PlayButton = document.getElementById("PlayButton");
+    MusicProgressBar = document.getElementById("MusicProgressBar");
+    FavouriteImg = document.getElementById("FavImg")
+    LoopImg = document.getElementById("LoopImg")
+    MusicProgressBar.value = 0
+    MusicDurationLabel = document.getElementById("MusicDurationLabel")
+
+
+MusicProgressBar.addEventListener("change", () => {
+    const Percentage = parseInt(MusicProgressBar.value) / 1000;
+    const NewTime = Percentage * Duration;
+    
+    SetDuration(NewTime);
+    UserDragging = false;
+});
+
+MusicProgressBar.addEventListener("mousedown", () => { UserDragging = true; });
+MusicProgressBar.addEventListener("touchstart", () => { UserDragging = true; });
+
+
+});
+
+const PlayButtonTexts = {"true" : "Pause","false" : "Play"}
+let UserDragging = false; // If the user is dragging or not
+
+
+
+
+//--------------------------------<Websockets>-------------------------------------------
+
+Socket.on("connect", function(){
+console.log("Connected succesfully");
+});
+
+
+Socket.on("GenericResponse",function(Data){ // For responses from the server
+
+console.log("Server Message: " + Data["Status"])
+
+});
+
+
+Socket.on("SearchResults",function(Data){ // For getting results.
+
+
+
+    Result = Data["Result"]
+    Details = Data["Details"]
+
+
+
+       if (Details["RemovePreviousResults"] === true){
+        ClearResultsList()
+       }
+
+        AddResultsList(Result["Name"] + " by " + Result["Author"], Result["Url"])
+
+
+
+});
+
+
+Socket.on("ServerDetails",function(Data){ // Data from server every 0.2 secs.
+MusicDetails = Data["Music"];
+
+
+ var SongName = MusicDetails["Name"]
+
+ if (SongName == "" ) { // Nothing is playinh
+    SongNameLabel.textContent = "Nothing is playing";
+
+ } else if (MusicDetails["SongLoaded"] == false) { // Something is playing but it is loading
+    SongNameLabel.textContent  = `Loading ${SongName}` // Javascript F-String
+ } else {
+    SongNameLabel.textContent  = `Playing ${SongName}`
+ }
+
+ PlayButton.textContent = PlayButtonTexts[MusicDetails["IsPlaying"]] // Add the proper text for if it is paused or playing
+ 
+ let TimePosition = MusicDetails["TimePosition"];
+ Duration = MusicDetails["TimeLength"];
+
+ CurrentUrl = MusicDetails["CurrentUrl"];
+
+ MusicDurationLabel.textContent = FormatTime(TimePosition) + "/" + FormatTime(Duration)
+
+ if (UserDragging == false) {
+ let MusicProgressBarValue = (TimePosition / Duration) * 1000;
+ MusicProgressBar.value = MusicProgressBarValue;
+
+ }
+
+if (MusicDetails["IsFavourited"] == true) {
+    FavouriteImg.src = "static/Icons/Favourite/True.png";
+} else {
+    FavouriteImg.src = "static/Icons/Favourite/False.png";
+}
+
+if (MusicDetails["IsLooping"]  == true) {
+    LoopImg.src = "static/Icons/Loop/True.png";
+} else {
+    LoopImg.src = "static/Icons/Loop/False.png";
+}
+
+});
+
+
+
+//--------------------------------<Functions>-------------------------------------------
+
+function FormatTime(Seconds){
+
+  if(Seconds < 0){
+    return "00:00"
+  }
+
+  const TotalSeconds = Math.floor(Math.abs(Seconds));
+  
+  const Hours = Math.floor(TotalSeconds / 3600);
+  const Minutes = Math.floor((TotalSeconds % 3600) / 60);
+  const RemainingSeconds = TotalSeconds % 60;
+
+  // Helper function also using PascalCase (or standard camelCase for a local helper)
+  const PadNumber = (Num) => String(Num).padStart(2, '0');
+
+  if (Hours > 0) {
+    // Format as H:MM:SS
+    return `${Hours}:${PadNumber(Minutes)}:${PadNumber(RemainingSeconds)}`;
+  } else {
+    // Format as MM:SS
+    return `${PadNumber(Minutes)}:${PadNumber(RemainingSeconds)}`;
+  }
+}
+
+
+
+
+function SetDuration(SetTo){
+    Socket.emit(
+        "ClientSubmit",
+        {
+            RequestType : "SetDuration",
+            Data : SetTo
+        }
+    )
+}
+
+
+function ClearResultsList(){
+document.getElementById("SearchResultsContainer").innerHTML = ""
+};
+
+function PlaySong(Url){
+
+    CurrentUrl = Url
+    Socket.emit(
+
+        "ClientSubmit",
+        {
+            RequestType : "PlaySong",
+            Data : Url
+        }
+
+
+    )
+}
+
+
+function FavouriteSong(){
+    Socket.emit(
+        "ClientSubmit",
+        {
+            RequestType : "SetFavourite",
+            Data : CurrentUrl
+        }
+
+
+    )
+}
+
+function LoopSong(){
+        Socket.emit(
+        "ClientSubmit",
+        {
+            RequestType : "ToggleLoop",
+            Data : "I want to keep listening to that masterpiece"
+        }
+
+
+    )
+}
+
+function AddResultsList(Text,Url){ //To do later.
+    const ListContainer = document.getElementById("SearchResultsContainer")
+    const ListItem = document.createElement("li")
+    const ListButton = document.createElement("Button")
+
+    ListItem.style = "list-style-type: none;" //Remove list number.
+
+    ListButton.textContent = Text
+    ListButton.className = "SearchResultsList"
+    ListButton.id = Url // Store The url as the ID
+    ListButton.onclick = function(){
+        PlaySong(this.id)
+    }
+
+    ListItem.appendChild(ListButton)
+
+    ListContainer.appendChild(ListItem)
+    
+
+}
+
+
+function DisablePlayingFeatures(To){} // Disable or Enable play button and everything else
+
+
+document.addEventListener("keydown",function(Event){ // Press enter to search song
+    if (Event.key === "Enter") {
+        Event.preventDefault(); // Prevent it from activating when typing and stuff
+        OnSubmit();
+    } else if (Event.key === " "){
+        Event.preventDefault(); // Prevent it from activating when typing and stuff
+        ToggleSongPlaying() // Pause or play audio.
+    }
+});
+
+
+function ToggleSongPlaying(){ //Pause and play music.
+Socket.emit("ClientSubmit",{
+    RequestType : "PauseSong",
+    Data: "PAUSE THAT SH*T"
+
+});
+};
+
+function OnSubmit(){
+
+    var MusicInput = document.getElementById("MusicSearch"); // Get all the useful elements.
+    ClearResultsList()
+
+
+    var RequestData = {
+        RequestType: "SearchSongs", // Request type
+        Data: MusicInput.value // Search
+    };
+
+
+    Socket.emit("ClientSubmit",RequestData)
+
+
+}
+
+
+function ShowFavourites(){ // Send server request to show favourites
+    Socket.emit(
+        "ClientSubmit",
+        {RequestType : "ShowFavourites",
+         Data: "PLZ PLZ PLZ" // Easter egg
+
+        }
+
+    );
+}
+
+
+
