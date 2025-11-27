@@ -56,8 +56,16 @@ if __name__ == "__main__":
     print("This is a module, and should not be run directly.")
     exit()
 
-def Say(Text: str): 
-    if not TTSEnabled: return   
+
+def FormatIP(IP : str): # Format IP to be easier to follow when said
+    
+    Formatted = " ".join(IP)
+    Formatted = Formatted.replace(".", " dot. ")
+    
+    return Formatted
+
+def Say(Text: str, Force = False): 
+    if not TTSEnabled and Force == False: return   
     TTSQueue.put(Text)
 
 def SayThenLog(Text: str):

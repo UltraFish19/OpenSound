@@ -1,6 +1,7 @@
 import datetime
 from flask import Flask,render_template
 from flask_socketio import SocketIO, emit
+import socket # to get ip
 import threading
 import DataService
 import MusicService
@@ -18,7 +19,7 @@ WebSocket : SocketIO
 GENERICRESPONSE = "GenericResponse" # Send whenever client sends data.
 SERVERDETAILS = "ServerDetails" # Will contain system information.
 SEARCHRESULTS = "SearchResults" # Send search results.
-
+Clients = 0
 
     
 #Do certain actions outside the App thread to prevent any silly issues and race conditions.
@@ -52,7 +53,17 @@ def SendServerDetailsToClient():
 
 
 
+def GetIpAdr(): # Returns the IP address of the website.
+    IpGrabber = socket.socket(socket.AF_INET,socket.SOCK_DGRAM) # Use internet protocol 
+    IpGrabber.settimeout(0)
 
+    try:
+        IpGrabber.connect(("10.255.255.255", 1)) 
+        IP = IpGrabber.getsockname()[0] # Gets the IP
+    except:
+        IP = "ERROR"
+    finally:
+        return IP
 
 
 
@@ -188,9 +199,17 @@ def App():
 
     @WebSocket.on("connect") # By default this will run whenever something connect.
     def HandleClientConnection():
+        global Clients
         print("Client connection detected")
         emit("GenericResponse",{"Status" : "Hello from the server, and welcome to OpenSound"})
-   
+        Clients += 1
+
+    @WebSocket.on("disconnect")
+    def HandleClientDisconnect():
+        global Clients
+        print("Client disconnected")
+        Clients -= 1
+
 
     @WebSocket.on("ClientSubmit") # This will handle whenever a Client wants to do something to the Server
     def HandleClientSubmit(RequestData): # Gives a JSON for whatever the client needs
