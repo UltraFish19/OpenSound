@@ -22,7 +22,7 @@
 
                 <div class="SystemControls">
                     <div display: flex style="align-items: center; display: flex ">
-                        <img class="OtherIcons" src="{{ url_for('static', filename='Icons/Volume/Max.png') }}" alt="Volume">
+                        <img class="OtherIcons" id="VolumeIcon" src="{{ url_for('static', filename='Icons/Volume/Max.png') }}" alt="Volume" data-Mute="{{ url_for('static', filename='Icons/Volume/Mute.png') }}" data-Low="{{ url_for('static', filename='Icons/Volume/Low.png') }}" data-Mid="{{ url_for('static', filename='Icons/Volume/Mid.png') }}">
                             <input class="VolumeSlider" id="VolumeSlider" type="range" max="100" min="0">                      
                     </div>
                     

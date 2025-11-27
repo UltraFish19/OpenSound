@@ -15,7 +15,7 @@ let LoopImg;
 let MusicDurationLabel;
 
 let VolumeSlider;
-
+let VolumeIcon
 //--------------------------------<Event Listeners>-------------------------------------------
 
 document.addEventListener("DOMContentLoaded", function() { //Wait for DOM to load
@@ -28,6 +28,7 @@ document.addEventListener("DOMContentLoaded", function() { //Wait for DOM to loa
     MusicProgressBar.value = 0
     MusicDurationLabel = document.getElementById("MusicDurationLabel")
     VolumeSlider = document.getElementById("VolumeSlider")
+    VolumeIcon = document.getElementById("VolumeIcon")
     
 
 
@@ -129,12 +130,21 @@ MusicDetails = Data["Music"];
  if (UserDraggingPB == false) {
  let MusicProgressBarValue = (TimePosition / Duration) * 1000;
  MusicProgressBar.value = MusicProgressBarValue;
-
+ 
  }
 
+ let MasterVolume = MusicDetails["MasterVolume"] 
  if (UserDraggingVC == false){
-    console.log("WORK")
-    VolumeSlider.value = MusicDetails["MasterVolume"] 
+    VolumeSlider.value = MasterVolume
+    if (MasterVolume >= 66){
+        VolumeIcon.src = "static/Icons/Volume/Max.png"
+    } else if (MasterVolume >= 33) {
+        VolumeIcon.src = "static/Icons/Volume/Mid.png"
+    } else if (MasterVolume <= 0) {
+        VolumeIcon.src = "static/Icons/Volume/Mute.png"
+    } else{
+        VolumeIcon.src = "static/Icons/Volume/Mid.png"
+    }
  }
 
 if (MusicDetails["IsFavourited"] == true) {
