@@ -16,6 +16,9 @@ print(IP)
 
 
 sleep(5)
+
+Say("Welcome to Opensound!", Force=True)
+
 while True:
     if AppService.Clients <= 0:
         Say(f"The Url is.  {IP} . colon 5 0 0 0 ",Force=True) # Says the IP
