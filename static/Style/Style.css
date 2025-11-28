@@ -262,22 +262,24 @@
 }
 
 .SystemControls {
-  margin-left: auto;   
+ 
   padding-right: 20px;  
   position: absolute;
   vertical-align:middle;
+  
 }
 .VolumeSlider {
   -webkit-appearance: none;
   appearance: none;
-  
+
+
 
   background: transparent; 
   cursor: pointer;
   outline: none;
   padding: 0;
   margin: 0;
-  
+  width: 100px;
 
   overflow: hidden;
  
