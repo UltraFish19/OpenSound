@@ -80,6 +80,10 @@ Socket.on("GenericResponse",function(Data){ // For responses from the server
 
 console.log("Server Message: " + Data["Status"])
 
+if (Data["Alert"]){
+    alert(Data["Alert"])
+}
+
 });
 
 

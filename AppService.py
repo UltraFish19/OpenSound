@@ -1,5 +1,5 @@
 import datetime
-from flask import Flask,render_template
+from flask import Flask,render_template, request
 from flask_socketio import SocketIO, emit
 import socket # to get ip
 import threading
@@ -26,12 +26,10 @@ Clients = 0
 
 
 
-def SendToClients(Data : dict, Type): # Should only be accessed from outside the App thread
+def SendToClients(Data : dict, Type,To = None ): # Should only be accessed from outside the App thread
     # Each Type should be in its correct format. (eg. SEARCHRESULTS should be in the proper dictionary format) 
     global WebSocket
-    WebSocket.emit(Type,Data) # Send to everyone connected.
-
-
+    WebSocket.emit(Type,Data,to=To) # Send to everyone connected.
 
 
 def SendServerDetailsToClient():
@@ -69,7 +67,7 @@ def GetIpAdr(): # Returns the IP address of the website.
 
 
 SearchDebounce = False # Add a debounce to prevent the function from running while it is currently searching
-def SearchSongForClient(SearchQuery : str,ShowFavourites = False):
+def SearchSongForClient(SearchQuery : str,SessionID : str,ShowFavourites = False):
     global SearchDebounce
 
     if SearchQuery.startswith(MusicService.DIRECTPLAYPREFIX): # Directly play from URL
@@ -120,7 +118,7 @@ def SearchSongForClient(SearchQuery : str,ShowFavourites = False):
                     
                     DataToSend["Details"] = AdditionalDataDict
 
-                    SendToClients(DataToSend,SEARCHRESULTS)
+                    SendToClients(DataToSend,SEARCHRESULTS,To=SessionID)
             else:
                 Say("Showing Favorites")
                 Data = DataService.ReadJson(MusicService.FAVSONGPATH)
@@ -146,7 +144,7 @@ def SearchSongForClient(SearchQuery : str,ShowFavourites = False):
 
                     DataToSend["Details"] = AdditionalDataDict
                     DataToSend["Result"] = ResultDict
-                    SendToClients(DataToSend,SEARCHRESULTS)
+                    SendToClients(DataToSend,SEARCHRESULTS,To=SessionID)
 
             
             SearchDebounce = False
@@ -175,6 +173,9 @@ def ToggleLoopForClient(): # Make song looped or not
 def SetVolumeForClient(To):
     MusicService.SongInfo.MasterVolume = To
     MusicService.SetVolume() # Actually makes it happen to everything
+
+def SendAlertToClient(Alert : str):
+     emit("GenericResponse",{"Status" : "Hello from the server, and welcome to OpenSound","Alert" : Alert})
 
 def App(): 
 
@@ -222,7 +223,8 @@ def App():
 
 
         if Type == "SearchSongs": # Search for songs
-            SearchSongForClient(Data)
+            SearchSongForClient(Data,request.sid)
+            
         elif Type == "PlaySong": # Play a song via url
             PlaySoundForClient(Data)
         elif Type == "PauseSong": # Toggle music pausingness
@@ -239,7 +241,7 @@ def App():
 
                     MusicService.SongInfo.IsFavourited = not MusicService.SongInfo.IsFavourited
         elif Type == "ShowFavourites": # Show songs that are favourited
-            SearchSongForClient("",True)
+            SearchSongForClient("",request.sid,True)
         elif Type == "ToggleLoop":
             ToggleLoopForClient()
         elif Type == "SetVolume":
