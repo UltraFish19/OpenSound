@@ -1,7 +1,9 @@
 # OpenSound
 
 
-OpenSound is an open-source project that can allow anyone with a Raspberry PI (3+) to convert their PI into a smart speaker. The entire speaker focuses on privacy and can play music on YouTube without ads or any trackers.
+OpenSound is an open-source project that can allow anyone with a Raspberry PI (3+) to convert their PI into a smart speaker. The entire speaker focuses on privacy and can play music on YouTube without ads or any trackers. 
+
+**NOTE:** This project isnt perfect and just a project I did for school, please don't expect this to be a world class, production smart speaker yet. This project might get better if I ever get motivated to work on it outside of school.
 
 ---
 ## Features:
