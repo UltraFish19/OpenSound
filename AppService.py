@@ -60,8 +60,8 @@ def GetIpAdr(): # Returns the IP address of the website.
         IP = IpGrabber.getsockname()[0] # Gets the IP
     except:
         IP = "ERROR"
-    finally:
-        return IP
+
+    return IP
 
 
 
