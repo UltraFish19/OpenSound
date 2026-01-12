@@ -37,7 +37,7 @@ pip install -r "<PATH TO Requirements.txt FILE>"
 
 Next install ffmpeg from [here](https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip), extract it and place it somewhere easy to access.
 
-Then go to [here](#CONFIG) to configurate the project.
+Then go to `Editing the configuration` to configurate the project.
 
 Finally run `OpenSound.py` to start.
 
@@ -50,7 +50,7 @@ Installing on Raspberry PI will take longer. The recommended installation is [Ra
 
 
 
-#### Editing the configuration: {#CONFIG}
+#### Editing the configuration:
 
 Both before starting the project you will need to first make changes to the `InternalSettings.json` file which is located in `OpenSound/Data/InternalSettings.json`
 
