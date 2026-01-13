@@ -1,9 +1,0 @@
-# These are all the required packages for the project
-
-pytubefix
-pyttsx3==2.91
-pydub
-audioop-lts
-Flask
-Flask-SocketIO
-pyglet
