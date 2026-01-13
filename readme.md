@@ -1,7 +1,9 @@
 # OpenSound
 
 
-OpenSound is an open-source project that can allow anyone with a Raspberry PI (3+) to convert their PI into a smart speaker. The entire speaker focuses on privacy and can play music on YouTube without ads or any trackers.
+OpenSound is an open-source project that can allow anyone with a Raspberry PI (3+) to convert their PI into a smart speaker. The entire speaker focuses on privacy and can play music on YouTube without ads or any trackers. 
+
+**NOTE:** This project isnt perfect and just a project I did for school, please don't expect this to be a world class, production smart speaker yet. This project might get better if I ever get motivated to work on it outside of school.
 
 ---
 ## Features:
@@ -37,7 +39,7 @@ pip install -r "<PATH TO Requirements.txt FILE>"
 
 Next install ffmpeg from [here](https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip), extract it and place it somewhere easy to access.
 
-Then go to [here](#CONFIG) to configurate the project.
+Then go to `Editing the configuration` to configurate the project.
 
 Finally run `OpenSound.py` to start.
 
@@ -50,7 +52,7 @@ Installing on Raspberry PI will take longer. The recommended installation is [Ra
 
 
 
-#### Editing the configuration: {#CONFIG}
+#### Editing the configuration:
 
 Both before starting the project you will need to first make changes to the `InternalSettings.json` file which is located in `OpenSound/Data/InternalSettings.json`
 
