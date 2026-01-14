@@ -48,7 +48,32 @@ Finally run `OpenSound.py` to start.
 
 Installing on Raspberry PI will take longer. The recommended installation is [Raspberry Pi OS Lite](https://www.raspberrypi.com/software/operating-systems/).
 
-> COMING SOON
+First connect to your Raspberry Pi using the method of your choice, you can either connect to it via SSH or connect it to a display. 
+
+Next you will need to do the following installations:
+
+
+Start with: `sudo apt update`
+Text to Speech Engine: `sudo apt install espeak-ng`
+XVFB (Required for audio to work): `sudo apt install xvfb`
+
+Create a folder in the root directory called `Opensound`
+Put all the content of this project into that folder and configure  the `InternalSettings.json` (Go to "Editing the configuration")
+
+Next get the file `opensound.service` which is in the `Opensound` folder and move it to `/etc/systemd/system`
+
+Next you should enable the autostart and your speaker should autoboot to the project:
+
+| Action | Command |
+| ----------- | ----------- |
+| Start Service | `sudo systemctl start opensound.service` |
+| Stop Service |`sudo systemctl stop opensound.service` |
+| Restart Service | `sudo systemctl restart opensound.service` |
+| Enable Autostart | `sudo systemctl disable opensound.service`   |
+| Check Status | `sudo systemctl status opensound.service`   |
+| Read logs | `journalctl -u opensound.service -f`   |
+
+
 
 
 
@@ -70,4 +95,4 @@ Both before starting the project you will need to first make changes to the `Int
 
 If you set things up properly and run the project you will hear your device announce the IP Address of your speaker. Simply open a browser and type in the ip. It should look like this `192.168.53:5000` it might look different but make sure you type in an ip along side the port being `5000`.
 
-To play music just press the button thats says `Music` and then you can search for songs. or go to `CURRENTURL/Music`.
+To play music just press the button thats says `Music` and then you can search for songs. or go to `<CURRENTURL>/Music`.
